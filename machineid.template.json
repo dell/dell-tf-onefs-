@@ -1,0 +1,102 @@
+{
+  "vonefs_skip_newfs_prompt": true,
+  "hal_num_ssds": 0,
+  "hal_node_type": "Azure",
+  "hal_chassis_type": 20,
+  "hal_linear_journal": false,
+  "hal_internal_interfaces": [
+    "hn1"
+  ],
+  "hal_dongle_serialno": "SV200-930073-${format("%04d", node_number)}",
+  "hal_jdisk_id": "/dev/mnv0",
+  "hal_num_journal_bays": 0,
+  "hal_dram_size": 2147483648,
+  "hal_dongle_sysconfig": "7331-1000-7331",
+  "hal_sata_disks": true,
+  "hal_nvram_type": 4,
+  "hal_num_blocks_ssd": 0,
+  "hal_hdd_drives": true,
+  "hal_external_gige_interfaces": [
+    "hn0"
+  ],
+  "hal_external_10gige_interfaces": [],
+  "hal_num_hdds": 5,
+  "hal_num_blocks_hdd": 33554432,
+  "hal_ssd_drives": false,
+  "hal_is_vonefs": true,
+  "hal_node_class": "storage",
+  "hal_ssd_capacity": 0,
+  "hal_sas_disks": true,
+  "hal_supports_vmx": true,
+  "hal_is_aws_node": false,
+  "hal_is_first_node": ${node_number == 0},
+  "devices": ${jsonencode([for index in range(cluster_nodes) : {
+    "serial_number": "SV200-930073-${format("%04d", index)}",
+    "int-a": cidrhost(internal_prefix, index + 10),
+    "ext-1": cidrhost(external_prefix, index + 10)
+  }])},
+  "acs_config": {
+    "join_mode": "auto",
+    "internal_networking": {
+      "internal_interfaces": [
+        {
+          "interface": "int-a",
+          "netmask": "${cidrnetmask(internal_prefix)}",
+          "ip_address_ranges": [
+            {
+              "high": "${cidrhost(internal_prefix, cluster_nodes + 10)}",
+              "low": "${cidrhost(internal_prefix, 10)}"
+            }
+          ]
+        }
+      ],
+      "internal_mtu": 1420
+    },
+    "external_networking" : {
+      "external_interfaces": [
+        {
+          "interface": "ext-1",
+          "netmask": "${cidrnetmask(external_prefix)}",
+          "gateway": "${external_gateway_address}",
+          "ip_address_ranges": [
+            {
+              "high": "${cidrhost(external_prefix, cluster_nodes + 10)}",
+              "low": "${cidrhost(external_prefix, 10)}"
+            }
+          ],
+          "mtu": 1420
+        }
+      ],
+      "dns_servers": ${dns_servers} ,
+      "dns_domains": [
+        "${dns_domains}"
+      ],
+      "internal_as_external": false,
+      "smartconnect": {
+        "service_addr": "${cidrhost(external_prefix, 9)}",
+        "zone": "${smartconnect_zone == "" ? "${cluster_name}.internal" : smartconnect_zone}"
+      }
+    },
+    "cluster": {
+      "name": "${cluster_name}",
+      "encoding": "utf-8",
+      "admin_user_password": "${admin_password}",
+      "cluster_owner": {
+        "phone": "123-555-9999",
+        "company": "Dell EMC",
+        "contact": "Unikitty",
+        "email": "unikitty@dell.com"
+      },
+      "nodes": ${jsonencode([for index in range(cluster_nodes) : {"serial_number": "SV200-930073-${format("%04d", index)}"}])},
+      "l3_cache": {
+        "ssd_l3_cache_default_enabled": false
+      },
+      "timezone": {
+        "name": "Pacific Time Zone"
+      },
+      "password": "${root_password}",
+      "cluster_name_nt4_compatibility": false
+    }
+  },
+  "ocm_endpoint": "${ocm_endpoint}"
+}
