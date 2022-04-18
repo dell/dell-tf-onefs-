@@ -12,7 +12,9 @@ variable "network_id" {
 }
 
 variable "cluster_id" {
+  default = null
 }
+
 
 variable "cluster_name" {
 }
@@ -104,9 +106,7 @@ variable "ocm_endpoint" {
 }
 
 variable "storage_account_name" {
-}
-
-variable "storage_account_resource_group" {
+  default = null
 }
 
 variable "resource_tags" {
@@ -116,7 +116,7 @@ variable "resource_tags" {
 }
 
 variable "node_size" {
-  default = "Standard_D4s_v4"
+  default = "Standard_D32s_v4"
 }
 
 variable "os_disk_type" {
@@ -135,19 +135,6 @@ variable "data_disks_per_node" {
   default = 3
 }
 
-/*
-external_secondary_ip is used with node lnn's mapped to
-lists of string IPs. Example:
-
-  external_secondary_ip = {
-    customer = {
-      0 = ["100.93.98.101", "100.93.98.102"]
-      1 = ["100.93.98.103", "100.93.98.104"]
-      2 = ["100.93.98.106", "100.93.98.105"]
-    }
-    management = {}
-  }
-*/
 variable "external_secondary_ip" {
   type = object({
     customer = map(list(string))
@@ -157,4 +144,9 @@ variable "external_secondary_ip" {
     customer = {}
     management = {}
   }
+}
+
+variable "timezone" {
+  type        = string
+  default     = "Greenwich Mean Time"
 }

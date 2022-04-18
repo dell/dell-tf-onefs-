@@ -2,14 +2,19 @@ provider "azurerm" {
   features {}
 }
 
+locals {
+  network_id_fields = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
+  internal_cluster_id = var.cluster_id != null ? var.cluster_id: var.cluster_name
+}
+
 resource "azurerm_resource_group" "azonefs_resource_group" {
-  name = var.resource_group != null ? var.resource_group : "${var.cluster_id}-resource-group"
+  name = var.resource_group != null ? var.resource_group : "${local.internal_cluster_id}-resource-group"
   location = var.location
   tags = var.resource_tags
 }
 
 resource "azurerm_storage_account" "bootdiag_storage_account" {
-  name = var.storage_account_name
+  name = var.storage_account_name != null ? var.storage_account_name : "${local.internal_cluster_id}stact"
   resource_group_name      = azurerm_resource_group.azonefs_resource_group.name
   location                 = var.location
   account_tier             = "Standard"
@@ -17,14 +22,11 @@ resource "azurerm_storage_account" "bootdiag_storage_account" {
 }
 
 resource "azurerm_proximity_placement_group" "azonefs_proximity_placement_group" {
-  name = "${var.cluster_id}-proximity-placement-group"
+  name = "${local.internal_cluster_id}-proximity-placement-group"
   location = azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = azurerm_resource_group.azonefs_resource_group.name
 }
 
-locals {
-  network_id_fields = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
-}
 
 data "azurerm_virtual_network" "azonefs_virtual_network" {
   name = local.network_id_fields.name
@@ -32,28 +34,28 @@ data "azurerm_virtual_network" "azonefs_virtual_network" {
 }
 
 resource "azurerm_subnet" "azonefs_internal_subnet" {
-  name = "${var.cluster_id}-internal-subnet"
+  name = "${local.internal_cluster_id}-internal-subnet"
   resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.azonefs_virtual_network.name
   address_prefixes = [var.internal_prefix]
 }
 
 resource "azurerm_subnet" "azonefs_external_subnet" {
-  name = "${var.cluster_id}-external-subnet"
+  name = "${local.internal_cluster_id}-external-subnet"
   resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.azonefs_virtual_network.name
   address_prefixes = [var.external_prefix]
 }
 
 resource "azurerm_network_security_group" "azonefs_network_security_group" {
-  name = "${var.cluster_id}-network-security-group"
+  name = "${local.internal_cluster_id}-network-security-group"
   location = azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = azurerm_resource_group.azonefs_resource_group.name
 }
 
 resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   count = var.cluster_nodes
-  name = "${var.cluster_id}-${count.index}-network-interface-internal"
+  name = "${local.internal_cluster_id}-${count.index}-network-interface-internal"
   location = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
   enable_accelerated_networking = true
@@ -80,7 +82,7 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 
 resource "azurerm_network_interface" "azonefs_network_interface_external" {
   count = var.cluster_nodes
-  name = "${var.cluster_id}-${count.index}-network-interface-external"
+  name = "${local.internal_cluster_id}-${count.index}-network-interface-external"
   location = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
   enable_accelerated_networking = true
@@ -121,7 +123,7 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 
 resource "azurerm_virtual_machine" "azonefs_node" {
   count = var.cluster_nodes
-  name                = "${var.cluster_id}-node-${count.index}"
+  name                = "${local.internal_cluster_id}-node-${count.index}"
   resource_group_name = azurerm_resource_group.azonefs_resource_group.name
   location            = azurerm_resource_group.azonefs_resource_group.location
   vm_size = var.node_size
@@ -137,7 +139,7 @@ resource "azurerm_virtual_machine" "azonefs_node" {
   os_profile {
     admin_username = var.cluster_admin_username
     admin_password = var.cluster_admin_password
-    computer_name  = "${var.cluster_id}-node-${count.index}"
+    computer_name  = "${local.internal_cluster_id}-node-${count.index}"
 
     # OneFS requires json on a single line and it must be double base64 encoded.
     custom_data = base64encode(base64encode(jsonencode(jsondecode(
@@ -155,9 +157,16 @@ resource "azurerm_virtual_machine" "azonefs_node" {
         external_gateway_address = var.external_gateway_address == null ? cidrhost(var.external_prefix, 1) : var.external_gateway_address,
         smartconnect_zone        = var.smartconnect_zone,
         ocm_endpoint             = var.ocm_endpoint,
+        timezone                 = var.timezone,
       })
     ))))
+
   }
+
+  lifecycle {
+      ignore_changes = [os_profile]
+    }    
+
 
   os_profile_linux_config {
     disable_password_authentication = false
@@ -169,7 +178,7 @@ resource "azurerm_virtual_machine" "azonefs_node" {
 
   delete_os_disk_on_termination = true
   storage_os_disk {
-    name              = "${var.cluster_id}-node-os-${count.index}"
+    name              = "${local.internal_cluster_id}-node-os-${count.index}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.os_disk_type
@@ -182,7 +191,7 @@ resource "azurerm_virtual_machine" "azonefs_node" {
     content{
       create_option = "Empty"
       lun = storage_data_disk.key
-      name = "${var.cluster_id}-node-data-${count.index}-${storage_data_disk.key}"
+      name = "${local.internal_cluster_id}-node-data-${count.index}-${storage_data_disk.key}"
       disk_size_gb = var.data_disk_size
       managed_disk_type = var.data_disk_type
     }
