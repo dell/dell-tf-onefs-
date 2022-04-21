@@ -23,16 +23,7 @@ variable "cluster_nodes" {
   default = 3
 }
 
-variable "location" {
-  default = "centralus"
-}
-
-variable "address_space" {
-  default = "10.20.0.0/16"
-}
-
 variable "internal_prefix" {
-  default = "10.20.1.0/24"
 }
 
 variable "internal_gateway_address" {
@@ -40,7 +31,26 @@ variable "internal_gateway_address" {
 }
 
 variable "external_prefix" {
-  default = "10.20.2.0/24"
+}
+
+variable "internal_subnet_name" {
+}
+
+variable "external_subnet_name" {
+}
+
+# The offset into the address ranges where we will begin our IP ranges
+variable "addr_range_offset" {
+  default = 4
+  validation {
+    condition = var.addr_range_offset > 3
+    error_message = "Azure reserves the first four IP addresses in subnets. addr_range_offset must be >3."
+  }
+}
+
+# The max number of nodes we will scale up to
+variable "max_num_nodes" {
+  default = 3
 }
 
 variable "external_gateway_address" {
@@ -82,7 +92,6 @@ variable "cluster_admin_password" {
 }
 
 variable "image_id" {
-  default = ""
 }
 
 variable "dns_servers" {
@@ -131,7 +140,7 @@ variable "data_disk_size" {
   default = 12
 }
 
-variable "data_disks_per_node" { 
+variable "data_disks_per_node" {
   default = 3
 }
 
