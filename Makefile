@@ -1,8 +1,13 @@
+VERSION := $(shell ./prepare_version.sh)
+
 ifeq ($(TARGET_TEST_DIR),)
 TARGET_DIR := examples
 else
 TARGET_DIR := TARGET_TEST_DIR
 endif
+
+show-version:
+	@echo -n $(VERSION)
 
 validate:
 
@@ -43,4 +48,15 @@ format: init
 	cd $(TARGET_DIR); terraform fmt \
 		-write=true \
 		-recursive
+
+package:
+	mkdir -p output
+	mkdir -p dist
+	cp main.tf output/main.tf
+	cp variables.tf output/main.tf
+	cp machineid.template.json output/machineid.template.json
+	cp docs/* output/
+	cp -r examples output/examples
+	cd output ; zip  ../dist/onefs_azure_vsa_${VERSION}.zip *
+
 

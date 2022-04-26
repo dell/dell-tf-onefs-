@@ -1,0 +1,52 @@
+// Jenkins file "philosophy".....
+//      Most operations should be in the Makefile
+//      Jenkins exists as a batch runner and credential keeper
+//
+pipeline {
+    agent {
+        // Equivalent to "docker build -f Dockerfile.build --build-arg version=1.0.2 ./build/
+        dockerfile {
+            filename 'Dockerfile.package'
+            args  '-v /var/run/docker.sock:/var/run/docker.sock -v /home/ocmuser/.ssh:/home/ocmuser/.ssh -v /etc/passwd:/etc/passwd'
+        }
+    }
+    environment {
+        BRANCH_NAME = "${GIT_BRANCH.replaceFirst(/^origin*\//, '')}"
+        BASE_VERSION=sh( returnStdout: true, script: 'make show-version' )
+    }
+    stages {
+        stage('Increment version') {
+            steps {
+              sh """
+                    git config user.email "svc-ocmgit"
+                    git config user.name "svc-ocmgit"
+                """
+            }
+        }
+        stage('Make Package') {
+            steps {
+                script {
+                        sh "make package"
+                 }
+            }
+        }
+    }
+
+    post{
+        unsuccessful{
+            cleanWs()
+        }
+        success{
+            script {
+                env.microservice_version=sh(script:"make show-version",returnStdout:true).trim()
+                env.microservice_name=sh(script:"make show-servicename",returnStdout:true).trim()
+                build wait: false, job: 'manifest_PR_Handler', parameters: [string(name: 'VERSION', value: microservice_version), string(name: 'MICROSERVICE_NAME', value: microservice_name)]
+            }
+            cleanWs()
+        }
+    }
+}
+
+def isApiSupported(){
+    return sh( returnStdout: true, script: 'make show-apisupported' )
+}
