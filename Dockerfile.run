@@ -3,7 +3,7 @@ FROM debian:bullseye
 
 ARG TERRAFORM_VERSION=1.1.9
 RUN  apt-get update \
-  && apt-get install -y wget unzip curl python3 ca-certificates curl apt-transport-https lsb-release gnupg make\
+  && apt-get install -y wget unzip curl python3 ca-certificates curl apt-transport-https lsb-release gnupg make git\
   && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O - https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
