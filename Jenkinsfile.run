@@ -33,19 +33,7 @@ pipeline {
         }
     }
 
-    post{
-        unsuccessful{
-            cleanWs()
-        }
-        success{
-            script {
-                env.microservice_version=sh(script:"make show-version",returnStdout:true).trim()
-                env.microservice_name=sh(script:"make show-servicename",returnStdout:true).trim()
-                build wait: false, job: 'manifest_PR_Handler', parameters: [string(name: 'VERSION', value: microservice_version), string(name: 'MICROSERVICE_NAME', value: microservice_name)]
-            }
-            cleanWs()
-        }
-    }
+
 }
 
 def isApiSupported(){
