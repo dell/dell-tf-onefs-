@@ -34,7 +34,7 @@ apply: plan
 	cd $(TARGET_DIR); terraform apply \
 		-lock=true \
 		-input=false \
-		-refresh=true
+		-auto-approve
 
 destroy: init
 	cd $(TARGET_DIR); terraform destroy \
