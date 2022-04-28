@@ -13,12 +13,10 @@ validate:
 
 
 init:
-	cd $(TARGET_DIR); terraform init \
+	cd $(TARGET_DIR); terraform init 
 		-input=false \
 		-force-copy \
-		-lock=true \
-		-upgrade \
-		-verify-plugins=true 
+		-lock=true 
 		
 plan: init
 	cd $(TARGET_DIR); terraform plan \
