@@ -25,10 +25,18 @@ pipeline {
         }
         stage('Run Terraform') {
             steps {
-                script {
-                        sh 'echo "$terraform_vars" > $TARGET_DIR/terraform.tfvars'
-                        sh "make plan"
-                 }
+               withCredentials([string(credentialsId: 'AZURE_CLIENT_ID', variable: 'ARM_CLIENT_ID')]) {
+                    withCredentials([string(credentialsId: 'AZURE_SECRET', variable: 'ARM_CLIENT_SECRET')]) {
+                        withCredentials([string(credentialsId: 'AZURE_SUBSCRIPTION', variable: 'ARM_SUBSCRIPTION_ID')]) {
+                            withCredentials([string(credentialsId: 'AZURE_TENANT', variable: 'ARM_TENANT_ID')]) {                
+                                script {
+                                        sh 'echo "$terraform_vars" > $TARGET_DIR/terraform.tfvars'
+                                        sh "make plan"
+                                }
+                            }
+                        }
+                    }
+               }
             }
         }
     }
