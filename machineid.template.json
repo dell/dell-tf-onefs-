@@ -32,8 +32,8 @@
   "hal_is_first_node": ${node_number == 0},
   "devices": ${jsonencode([for index in range(cluster_nodes) : {
     "serial_number": "SV200-930073-${format("%04d", index)}",
-    "int-a": cidrhost(internal_prefix, index + 10),
-    "ext-1": cidrhost(external_prefix, index + 10)
+    "int-a": cidrhost(internal_prefix, index + addr_range_offset)
+    "ext-1": cidrhost(external_prefix, index + addr_range_offset)
   }])},
   "acs_config": {
     "join_mode": "auto",
@@ -44,8 +44,8 @@
           "netmask": "${cidrnetmask(internal_prefix)}",
           "ip_address_ranges": [
             {
-              "high": "${cidrhost(internal_prefix, cluster_nodes + 10)}",
-              "low": "${cidrhost(internal_prefix, 10)}"
+              "high": "${cidrhost(internal_prefix, max_num_nodes + addr_range_offset)}",
+              "low": "${cidrhost(internal_prefix, addr_range_offset)}"
             }
           ]
         }
@@ -60,8 +60,8 @@
           "gateway": "${external_gateway_address}",
           "ip_address_ranges": [
             {
-              "high": "${cidrhost(external_prefix, cluster_nodes + 10)}",
-              "low": "${cidrhost(external_prefix, 10)}"
+              "high": "${cidrhost(external_prefix, max_num_nodes + addr_range_offset)}",
+              "low": "${cidrhost(external_prefix, addr_range_offset)}"
             }
           ],
           "mtu": 1420
@@ -73,7 +73,7 @@
       ],
       "internal_as_external": false,
       "smartconnect": {
-        "service_addr": "${cidrhost(external_prefix, 9)}",
+        "service_addr": "${cidrhost(external_prefix, addr_range_offset - 1)}",
         "zone": "${smartconnect_zone == "" ? "${cluster_name}.internal" : smartconnect_zone}"
       }
     },
