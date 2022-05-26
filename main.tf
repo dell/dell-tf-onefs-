@@ -53,7 +53,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   count = var.cluster_nodes
   name = "${local.internal_cluster_id}-${count.index}-network-interface-internal"
   location = data.azurerm_virtual_network.azonefs_virtual_network.location
-  resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
+  resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
 
   ip_configuration {
@@ -80,7 +80,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_external" {
   count = var.cluster_nodes
   name = "${local.internal_cluster_id}-${count.index}-network-interface-external"
   location = data.azurerm_virtual_network.azonefs_virtual_network.location
-  resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
+  resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
 
   ip_configuration {
