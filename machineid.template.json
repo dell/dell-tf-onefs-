@@ -20,8 +20,8 @@
     "hn0"
   ],
   "hal_external_10gige_interfaces": [],
-  "hal_num_hdds": 5,
-  "hal_num_blocks_hdd": 33554432,
+  "hal_num_hdds": ${num_drives},
+  "hal_num_blocks_hdd": ${drive_size * (pow(1024, 2)) * (1024 / 512)},
   "hal_ssd_drives": false,
   "hal_is_vonefs": true,
   "hal_node_class": "storage",

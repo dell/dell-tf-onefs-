@@ -157,6 +157,8 @@ resource "azurerm_virtual_machine" "azonefs_node" {
         smartconnect_zone        = var.smartconnect_zone,
         ocm_endpoint             = var.ocm_endpoint,
         timezone                 = var.timezone,
+        drive_size               = var.data_disk_size,
+        num_drives               = var.data_disks_per_node,
       })
     ))))
 
