@@ -163,8 +163,12 @@ resource "azurerm_virtual_machine" "azonefs_node" {
   }
 
   lifecycle {
-      ignore_changes = [os_profile]
+    ignore_changes = [os_profile]
+    precondition {
+      condition     = var.cluster_nodes <= 20 && var.cluster_nodes <= var.max_num_nodes
+      error_message = "PowerScale maximum number of nodes must be specified at cluster creation time and cannot scale more than 20 nodes."
     }
+  }
 
 
   os_profile_linux_config {

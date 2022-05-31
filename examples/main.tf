@@ -8,7 +8,6 @@ module "multi-node-example" {
 
   timezone = "Greenwich Mean Time"
   cluster_nodes = 3
-  max_num_nodes = 4
 
   image_id = "/subscriptions/0629574c-1c80-4365-b0c6-3f5fdde6518e/resourceGroups/mbryan/providers/Microsoft.Compute/images/onefsimg"
 

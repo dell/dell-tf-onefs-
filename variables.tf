@@ -21,6 +21,10 @@ variable "cluster_name" {
 
 variable "cluster_nodes" {
   default = 3
+  validation {
+    condition     = var.cluster_nodes <= 20
+    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
+  }
 }
 
 variable "internal_prefix" {
@@ -50,7 +54,11 @@ variable "addr_range_offset" {
 
 # The max number of nodes we will scale up to
 variable "max_num_nodes" {
-  default = 3
+  default = 6
+  validation {
+    condition     = var.max_num_nodes <= 20
+    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
+  }
 }
 
 variable "external_gateway_address" {

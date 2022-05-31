@@ -44,7 +44,7 @@
           "netmask": "${cidrnetmask(internal_prefix)}",
           "ip_address_ranges": [
             {
-              "high": "${cidrhost(internal_prefix, max_num_nodes + addr_range_offset)}",
+              "high": "${cidrhost(internal_prefix, max_num_nodes + addr_range_offset -1)}",
               "low": "${cidrhost(internal_prefix, addr_range_offset)}"
             }
           ]
@@ -60,7 +60,7 @@
           "gateway": "${external_gateway_address}",
           "ip_address_ranges": [
             {
-              "high": "${cidrhost(external_prefix, max_num_nodes + addr_range_offset)}",
+              "high": "${cidrhost(external_prefix, max_num_nodes + addr_range_offset -1)}",
               "low": "${cidrhost(external_prefix, addr_range_offset)}"
             }
           ],
