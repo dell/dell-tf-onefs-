@@ -2,7 +2,7 @@
 # so we can validate the passwords. New versions do not need this.
 # TODO(tswanson): What version are we using?
 terraform {
-  
+
 }
 variable "resource_group" {
   default = null
@@ -47,7 +47,7 @@ variable "external_subnet_name" {
 variable "addr_range_offset" {
   default = 4
   validation {
-    condition = var.addr_range_offset > 3
+    condition     = var.addr_range_offset > 3
     error_message = "Azure reserves the first four IP addresses in subnets. addr_range_offset must be >3."
   }
 }
@@ -71,11 +71,11 @@ variable "cluster_root_password" {
       length(var.cluster_root_password) > 6 &&
       length(var.cluster_root_password) <= 72 &&
       (min(1, length(regexall("[a-z]+", var.cluster_root_password))) +
-       min(1, length(regexall("[A-Z]+", var.cluster_root_password))) +
-       min(1, length(regexall("[0-9]+", var.cluster_root_password))) +
-       min(1, length(regexall("[!-/:-@[-`{-~]+", var.cluster_root_password)))) >= 3 &&
+        min(1, length(regexall("[A-Z]+", var.cluster_root_password))) +
+        min(1, length(regexall("[0-9]+", var.cluster_root_password))) +
+      min(1, length(regexall("[!-/:-@[-`{-~]+", var.cluster_root_password)))) >= 3 &&
       length(regexall("[[:space:]]+", var.cluster_root_password)) == 0 &&
-      length(regexall("[[:cntrl:]]+", var.cluster_root_password)) == 0)
+    length(regexall("[[:cntrl:]]+", var.cluster_root_password)) == 0)
     error_message = "The supplied password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:\r\n1) Contains an uppercase character\r\n2) Contains a lowercase character\r\n3) Contains a numeric digit\r\n4) Contains a special character\r\n5) Control characters are not allowed."
   }
 }
@@ -90,11 +90,11 @@ variable "cluster_admin_password" {
       length(var.cluster_admin_password) > 6 &&
       length(var.cluster_admin_password) <= 72 &&
       (min(1, length(regexall("[a-z]+", var.cluster_admin_password))) +
-       min(1, length(regexall("[A-Z]+", var.cluster_admin_password))) +
-       min(1, length(regexall("[0-9]+", var.cluster_admin_password))) +
-       min(1, length(regexall("[!-/:-@[-`{-~]+", var.cluster_admin_password)))) >= 3 &&
+        min(1, length(regexall("[A-Z]+", var.cluster_admin_password))) +
+        min(1, length(regexall("[0-9]+", var.cluster_admin_password))) +
+      min(1, length(regexall("[!-/:-@[-`{-~]+", var.cluster_admin_password)))) >= 3 &&
       length(regexall("[[:space:]]+", var.cluster_admin_password)) == 0 &&
-      length(regexall("[[:cntrl:]]+", var.cluster_admin_password)) == 0)
+    length(regexall("[[:cntrl:]]+", var.cluster_admin_password)) == 0)
     error_message = "The supplied password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:\r\n1) Contains an uppercase character\r\n2) Contains a lowercase character\r\n3) Contains a numeric digit\r\n4) Contains a special character\r\n5) Control characters are not allowed."
   }
 }
@@ -127,8 +127,8 @@ variable "storage_account_name" {
 }
 
 variable "resource_tags" {
-    type = map(string)
-    default = {
+  type = map(string)
+  default = {
   }
 }
 
@@ -154,16 +154,16 @@ variable "data_disks_per_node" {
 
 variable "external_secondary_ip" {
   type = object({
-    customer = map(list(string))
+    customer   = map(list(string))
     management = map(list(string))
   })
   default = {
-    customer = {}
+    customer   = {}
     management = {}
   }
 }
 
 variable "timezone" {
-  type        = string
-  default     = "Greenwich Mean Time"
+  type    = string
+  default = "Greenwich Mean Time"
 }
