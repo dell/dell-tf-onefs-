@@ -4,8 +4,8 @@ provider "azurerm" {
 }
 
 locals {
-  network_id_fields = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
-  internal_cluster_id = var.cluster_id != null ? var.cluster_id: var.cluster_name
+  network_id_fields   = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
+  internal_cluster_id = var.cluster_id != null ? var.cluster_id : var.cluster_name
 }
 
 data "azurerm_resource_group" "azonefs_resource_group" {
@@ -13,7 +13,7 @@ data "azurerm_resource_group" "azonefs_resource_group" {
 }
 
 resource "azurerm_storage_account" "bootdiag_storage_account" {
-  name = var.storage_account_name != null ? var.storage_account_name : "${local.internal_cluster_id}stact"
+  name                     = var.storage_account_name != null ? var.storage_account_name : "${local.internal_cluster_id}stact"
   resource_group_name      = data.azurerm_resource_group.azonefs_resource_group.name
   location                 = data.azurerm_resource_group.azonefs_resource_group.location
   account_tier             = "Standard"
@@ -21,52 +21,52 @@ resource "azurerm_storage_account" "bootdiag_storage_account" {
 }
 
 resource "azurerm_proximity_placement_group" "azonefs_proximity_placement_group" {
-  name = "${local.internal_cluster_id}-proximity-placement-group"
-  location = data.azurerm_resource_group.azonefs_resource_group.location
+  name                = "${local.internal_cluster_id}-proximity-placement-group"
+  location            = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
 }
 
 
 data "azurerm_virtual_network" "azonefs_virtual_network" {
-  name = local.network_id_fields.name
+  name                = local.network_id_fields.name
   resource_group_name = local.network_id_fields.resource_group
 }
 
 data "azurerm_subnet" "azonefs_internal_subnet" {
-  name = var.internal_subnet_name
-  resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
+  name                 = var.internal_subnet_name
+  resource_group_name  = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.azonefs_virtual_network.name
 }
 
 data "azurerm_subnet" "azonefs_external_subnet" {
-  name = var.external_subnet_name
-  resource_group_name = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
+  name                 = var.external_subnet_name
+  resource_group_name  = data.azurerm_virtual_network.azonefs_virtual_network.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.azonefs_virtual_network.name
 }
 
 resource "azurerm_network_security_group" "azonefs_network_security_group" {
-  name = "${local.internal_cluster_id}-network-security-group"
-  location = data.azurerm_resource_group.azonefs_resource_group.location
+  name                = "${local.internal_cluster_id}-network-security-group"
+  location            = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
 }
 
 resource "azurerm_network_interface" "azonefs_network_interface_internal" {
-  count = var.cluster_nodes
-  name = "${local.internal_cluster_id}-${count.index}-network-interface-internal"
-  location = data.azurerm_virtual_network.azonefs_virtual_network.location
-  resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
+  count                         = var.cluster_nodes
+  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-internal"
+  location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
+  resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
 
   ip_configuration {
-    name = "internal"
-    subnet_id = data.azurerm_subnet.azonefs_internal_subnet.id
+    name                          = "internal"
+    subnet_id                     = data.azurerm_subnet.azonefs_internal_subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address = cidrhost(var.internal_prefix, count.index + var.addr_range_offset)
+    private_ip_address            = cidrhost(var.internal_prefix, count.index + var.addr_range_offset)
   }
 }
 
 resource "azurerm_network_interface_security_group_association" "azonefs_network_interface_internal_nsg_association" {
-  count = var.cluster_nodes
+  count                     = var.cluster_nodes
   network_interface_id      = azurerm_network_interface.azonefs_network_interface_internal[count.index].id
   network_security_group_id = azurerm_network_security_group.azonefs_network_security_group.id
   # The depends_one is needed if we don't define a network security rule. Otherwise Terraform will attempt to
@@ -78,35 +78,35 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 }
 
 resource "azurerm_network_interface" "azonefs_network_interface_external" {
-  count = var.cluster_nodes
-  name = "${local.internal_cluster_id}-${count.index}-network-interface-external"
-  location = data.azurerm_virtual_network.azonefs_virtual_network.location
-  resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
+  count                         = var.cluster_nodes
+  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-external"
+  location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
+  resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
 
   ip_configuration {
-    name = "external"
-    subnet_id = data.azurerm_subnet.azonefs_external_subnet.id
+    name                          = "external"
+    subnet_id                     = data.azurerm_subnet.azonefs_external_subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address = cidrhost(var.external_prefix, count.index + var.addr_range_offset)
-    primary = true
+    private_ip_address            = cidrhost(var.external_prefix, count.index + var.addr_range_offset)
+    primary                       = true
   }
 
   dynamic "ip_configuration" {
     for_each = lookup(var.external_secondary_ip.customer, count.index, [])
     content {
-      name = "external_secondary${ip_configuration.key}"
-      subnet_id = data.azurerm_subnet.azonefs_external_subnet.id
+      name                          = "external_secondary${ip_configuration.key}"
+      subnet_id                     = data.azurerm_subnet.azonefs_external_subnet.id
       private_ip_address_allocation = "Static"
-      private_ip_address = ip_configuration.value
-      primary = false
+      private_ip_address            = ip_configuration.value
+      primary                       = false
     }
   }
   # TODO: management secondary IPs when management subnet is added
 }
 
 resource "azurerm_network_interface_security_group_association" "azonefs_network_interface_external_nsg_association" {
-  count = var.cluster_nodes
+  count                     = var.cluster_nodes
   network_interface_id      = azurerm_network_interface.azonefs_network_interface_external[count.index].id
   network_security_group_id = azurerm_network_security_group.azonefs_network_security_group.id
   # The depends_one is needed if we don't define a network security rule. Otherwise Terraform will attempt to
@@ -119,12 +119,12 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 }
 
 resource "azurerm_virtual_machine" "azonefs_node" {
-  count = var.cluster_nodes
+  count               = var.cluster_nodes
   name                = "${local.internal_cluster_id}-node-${count.index}"
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   location            = data.azurerm_resource_group.azonefs_resource_group.location
-  vm_size = var.node_size
-  tags = var.resource_tags
+  vm_size             = var.node_size
+  tags                = var.resource_tags
 
   proximity_placement_group_id = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
   primary_network_interface_id = azurerm_network_interface.azonefs_network_interface_external[count.index].id
@@ -157,14 +157,20 @@ resource "azurerm_virtual_machine" "azonefs_node" {
         smartconnect_zone        = var.smartconnect_zone,
         ocm_endpoint             = var.ocm_endpoint,
         timezone                 = var.timezone,
+        drive_size               = var.data_disk_size,
+        num_drives               = var.data_disks_per_node,
       })
     ))))
 
   }
 
   lifecycle {
-      ignore_changes = [os_profile]
+    ignore_changes = [os_profile]
+    precondition {
+      condition     = var.cluster_nodes <= 20 && var.cluster_nodes <= var.max_num_nodes
+      error_message = "PowerScale maximum number of nodes must be specified at cluster creation time and cannot scale more than 20 nodes."
     }
+  }
 
 
   os_profile_linux_config {
@@ -187,17 +193,17 @@ resource "azurerm_virtual_machine" "azonefs_node" {
   dynamic "storage_data_disk" {
     for_each = range(var.data_disks_per_node)
 
-    content{
-      create_option = "Empty"
-      lun = storage_data_disk.key
-      name = "${local.internal_cluster_id}-node-data-${count.index}-${storage_data_disk.key}"
-      disk_size_gb = var.data_disk_size
+    content {
+      create_option     = "Empty"
+      lun               = storage_data_disk.key
+      name              = "${local.internal_cluster_id}-node-data-${count.index}-${storage_data_disk.key}"
+      disk_size_gb      = var.data_disk_size
       managed_disk_type = var.data_disk_type
     }
   }
 
   boot_diagnostics {
-    enabled = true
+    enabled     = true
     storage_uri = azurerm_storage_account.bootdiag_storage_account.primary_blob_endpoint
   }
 

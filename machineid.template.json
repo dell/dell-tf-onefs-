@@ -20,8 +20,8 @@
     "hn0"
   ],
   "hal_external_10gige_interfaces": [],
-  "hal_num_hdds": 5,
-  "hal_num_blocks_hdd": 33554432,
+  "hal_num_hdds": ${num_drives},
+  "hal_num_blocks_hdd": ${drive_size * (pow(1024, 2)) * (1024 / 512)},
   "hal_ssd_drives": false,
   "hal_is_vonefs": true,
   "hal_node_class": "storage",
@@ -44,7 +44,7 @@
           "netmask": "${cidrnetmask(internal_prefix)}",
           "ip_address_ranges": [
             {
-              "high": "${cidrhost(internal_prefix, max_num_nodes + addr_range_offset)}",
+              "high": "${cidrhost(internal_prefix, max_num_nodes + addr_range_offset -1)}",
               "low": "${cidrhost(internal_prefix, addr_range_offset)}"
             }
           ]
@@ -60,7 +60,7 @@
           "gateway": "${external_gateway_address}",
           "ip_address_ranges": [
             {
-              "high": "${cidrhost(external_prefix, max_num_nodes + addr_range_offset)}",
+              "high": "${cidrhost(external_prefix, max_num_nodes + addr_range_offset -1)}",
               "low": "${cidrhost(external_prefix, addr_range_offset)}"
             }
           ],
