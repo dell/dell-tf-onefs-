@@ -27,6 +27,10 @@ variable "cluster_nodes" {
   }
 }
 
+variable "update_domain_count" {
+  default = 20
+}
+
 variable "internal_prefix" {
 }
 
