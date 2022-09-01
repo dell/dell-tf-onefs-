@@ -31,7 +31,7 @@ pipeline {
                             withCredentials([string(credentialsId: 'AZURE_TENANT', variable: 'ARM_TENANT_ID')]) {                
                                 script {
                                         sh 'echo "$terraform_vars" > $TARGET_DIR/terraform.tfvars'
-                                        sh "make apply"
+                                        sh "make $TERRAFORM_ACTION"
                                 }
                             }
                         }
