@@ -3,8 +3,9 @@ module "multi-node-example" {
 
   resource_group = "mbryan"
   cluster_name = "mbryantemp"
+
   cluster_admin_password = "Dell@1235"
-  cluster_root_password = "Dell@1235"
+  cluster_root_password  = "Dell@1235"
 
   timezone = "Greenwich Mean Time"
   cluster_nodes = 3

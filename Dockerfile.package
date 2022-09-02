@@ -1,0 +1,12 @@
+
+FROM debian:bullseye
+
+RUN  apt-get update \
+  && apt-get install -y wget unzip curl python3 ca-certificates curl apt-transport-https lsb-release gnupg make zip git\
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app
+COPY . ./
+
+
+

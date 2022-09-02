@@ -8,6 +8,7 @@ locals {
   internal_cluster_id = var.cluster_id != null ? var.cluster_id : var.cluster_name
 }
 
+
 data "azurerm_resource_group" "azonefs_resource_group" {
   name = var.resource_group != null ? var.resource_group : "${local.internal_cluster_id}-resource-group"
 }
