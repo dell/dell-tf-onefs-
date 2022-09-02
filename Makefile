@@ -18,7 +18,7 @@ init:
 		-force-copy \
 		-lock=true 
 		
-plan: init
+plan: workspaceselect
 	cd $(TARGET_DIR); terraform plan \
 		-lock=true \
 		-input=false \
@@ -30,13 +30,19 @@ plan-destroy: init
 		-refresh=true \
 		-destroy
 
+workspaceinit: init
+	cd $(TARGET_DIR); terraform workspace new $(WORKSPACE_ID)
+
+workspaceselect: workspaceinit
+	cd $(TARGET_DIR); terraform workspace select $(WORKSPACE_ID)
+
 apply: plan
 	cd $(TARGET_DIR); terraform apply \
 		-lock=true \
 		-input=false \
 		-auto-approve
 
-destroy: init
+destroy: workspaceselect
 	cd $(TARGET_DIR); terraform destroy \
 		-lock=true \
 		-input=false \
