@@ -137,7 +137,7 @@ variable "resource_tags" {
 }
 
 variable "node_size" {
-  default = "Standard_D32s_v4"
+  default = "Standard_D8ds_v4"
 }
 
 variable "os_disk_type" {
@@ -170,4 +170,9 @@ variable "external_secondary_ip" {
 variable "timezone" {
   type    = string
   default = "Greenwich Mean Time"
+}
+
+variable "jdev" {
+  type    = string
+  default = "bay.64"
 }
