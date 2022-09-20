@@ -151,6 +151,7 @@ resource "azurerm_virtual_machine" "azonefs_node" {
     # OneFS requires json on a single line and it must be double base64 encoded.
     custom_data = base64encode(base64encode(jsonencode(jsondecode(
       templatefile("${path.module}/machineid.template.json", {
+        jdev                     = var.jdev
         addr_range_offset        = var.addr_range_offset,
         max_num_nodes            = var.max_num_nodes,
         cluster_name             = var.cluster_name,
@@ -226,8 +227,3 @@ resource "azurerm_virtual_machine" "azonefs_node" {
 output "ip_addresses" {
   value = azurerm_network_interface.azonefs_network_interface_external[*].ip_configuration[0].private_ip_address
 }
-
-output "internal_ip_addresses" {
-  value = azurerm_network_interface.azonefs_network_interface_internal[*].ip_configuration[0].private_ip_address
-}
-

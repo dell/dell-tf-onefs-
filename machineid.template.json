@@ -3,17 +3,17 @@
   "hal_num_ssds": 0,
   "hal_node_type": "Azure",
   "hal_chassis_type": 20,
-  "hal_linear_journal": false,
+  "hal_linear_journal": true,
   "hal_internal_interfaces": [
     "hn1"
   ],
   "hal_dongle_serialno": "SV200-930073-${format("%04d", node_number)}",
-  "hal_jdisk_id": "/dev/mnv0",
-  "hal_num_journal_bays": 0,
-  "hal_dram_size": 2147483648,
+  "hal_jdisk_id": ${jsonencode(jdev)},
+  "hal_num_journal_bays": 1,
+  "hal_dram_size": 68719476736,
   "hal_dongle_sysconfig": "7331-1000-7331",
   "hal_sata_disks": true,
-  "hal_nvram_type": 4,
+  "hal_nvram_type": 1,
   "hal_num_blocks_ssd": 0,
   "hal_hdd_drives": true,
   "hal_external_gige_interfaces": [
