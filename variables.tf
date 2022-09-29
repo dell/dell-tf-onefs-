@@ -15,14 +15,15 @@ variable "cluster_id" {
   default = null
 }
 
-variable "sku_name" {
+variable "node_size" {
+  default = "Standard_D8ds_v4"
   validation {
     condition = contains(
-    ["Standard_D2ds_v4", "Standard_D4ds_v4", "Standard_D8ds_v4", "Standard_D16ds_v4",
-     "Standard_D32ds_v4", "Standard_D48ds_v4", "Standard_D64ds_v4",
-     "Standard_E2ds_v4", "Standard_E4ds_v4", "Standard_E8ds_v4", "Standard_E16ds_v4",
-     "Standard_E20ds_v4", "Standard_E32ds_v4", "Standard_E48ds_v4", "Standard_E64ds_v4"],
-    var.sku_name
+      ["Standard_D2ds_v4", "Standard_D4ds_v4", "Standard_D8ds_v4", "Standard_D16ds_v4",
+        "Standard_D32ds_v4", "Standard_D48ds_v4", "Standard_D64ds_v4",
+        "Standard_E2ds_v4", "Standard_E4ds_v4", "Standard_E8ds_v4", "Standard_E16ds_v4",
+      "Standard_E20ds_v4", "Standard_E32ds_v4", "Standard_E48ds_v4", "Standard_E64ds_v4"],
+      var.node_size
     )
     error_message = "Error: SKU is not valid. Possible SKUs\nStandard_D2ds_v4\nStandard_D4ds_v4\nStandard_D8ds_v4\nStandard_D16ds_v4\nStandard_D32ds_v4\nStandard_D48ds_v4\nStandard_D64ds_v4\nStandard_E2ds_v4\nStandard_E4ds_v4\nStandard_E8ds_v4\nStandard_E16ds_v4\nStandard_E20ds_v4\nStandard_E32ds_v4\nStandard_E48ds_v4\nStandard_E64ds_v4"
   }
@@ -146,10 +147,6 @@ variable "resource_tags" {
   type = map(string)
   default = {
   }
-}
-
-variable "node_size" {
-  default = "Standard_D8ds_v4"
 }
 
 variable "os_disk_type" {
