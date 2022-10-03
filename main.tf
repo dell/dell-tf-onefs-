@@ -28,12 +28,12 @@ resource "azurerm_proximity_placement_group" "azonefs_proximity_placement_group"
 }
 
 resource "azurerm_availability_set" "azonefs_aset" {
-  name                          = "${local.internal_cluster_id}-aset"
-  location                      = data.azurerm_resource_group.azonefs_resource_group.location
-  resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
-  proximity_placement_group_id  = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
-  platform_update_domain_count  = var.update_domain_count
-  platform_fault_domain_count   = 2
+  name                         = "${local.internal_cluster_id}-aset"
+  location                     = data.azurerm_resource_group.azonefs_resource_group.location
+  resource_group_name          = data.azurerm_resource_group.azonefs_resource_group.name
+  proximity_placement_group_id = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
+  platform_update_domain_count = var.update_domain_count
+  platform_fault_domain_count  = 2
 }
 
 data "azurerm_virtual_network" "azonefs_virtual_network" {
