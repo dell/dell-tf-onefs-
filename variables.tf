@@ -35,8 +35,8 @@ variable "cluster_name" {
 variable "cluster_nodes" {
   default = 3
   validation {
-    condition     = var.cluster_nodes <= 20
-    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
+    condition     = var.cluster_nodes <= 6
+    error_message = "PowerScale clusters on Azure must be less then or equal to 6 nodes."
   }
 }
 
@@ -73,8 +73,8 @@ variable "addr_range_offset" {
 variable "max_num_nodes" {
   default = 6
   validation {
-    condition     = var.max_num_nodes <= 20
-    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
+    condition     = var.max_num_nodes <= 6
+    error_message = "PowerScale clusters on Azure must be less then or equal to 6 nodes."
   }
 }
 
@@ -150,11 +150,11 @@ variable "resource_tags" {
 }
 
 variable "os_disk_type" {
-  default = "Standard_LRS"
+  default = "Premium_LRS"
 }
 
 variable "data_disk_type" {
-  default = "StandardSSD_LRS"
+  default = "Premium_LRS"
 }
 
 variable "data_disk_size" {
@@ -183,5 +183,5 @@ variable "timezone" {
 
 variable "jdev" {
   type    = string
-  default = "bay.64"
+  default = "bay.0"
 }
