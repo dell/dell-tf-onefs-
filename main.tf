@@ -1,7 +1,12 @@
-provider "azurerm" {
-  features {}
-  skip_provider_registration = true
+
+terraform {
+  required_providers {
+    azurerm = {
+      version = "~>3.00"
+    }
+  }
 }
+
 
 locals {
   network_id_fields   = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
@@ -227,3 +232,8 @@ resource "azurerm_virtual_machine" "azonefs_node" {
 output "ip_addresses" {
   value = azurerm_network_interface.azonefs_network_interface_external[*].ip_configuration[0].private_ip_address
 }
+
+output "internal_ip_addresses" {
+  value = azurerm_network_interface.azonefs_network_interface_internal[*].ip_configuration[0].private_ip_address
+}
+
