@@ -127,95 +127,98 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
   ]
 }
 
-resource "azurerm_virtual_machine" "azonefs_node" {
-  count               = var.cluster_nodes
-  name                = "${local.internal_cluster_id}-node-${count.index}"
-  resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
-  location            = data.azurerm_resource_group.azonefs_resource_group.location
-  vm_size             = var.node_size
-  tags                = var.resource_tags
-  availability_set_id = azurerm_availability_set.azonefs_aset.id
+locals {
+  mid = jsondecode(
+    templatefile("${path.module}/machineid.tftpl", {
+      addr_range_offset = var.addr_range_offset
+      cluster_nodes     = var.cluster_nodes,
+      drive_size        = var.data_disk_size,
+      external_prefix   = var.external_prefix,
+      internal_prefix   = var.internal_prefix,
+      jdev              = var.jdev
+      num_drives        = var.data_disks_per_node,
+    })
+  )
 
-  proximity_placement_group_id = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
-  primary_network_interface_id = azurerm_network_interface.azonefs_network_interface_external[count.index].id
-  network_interface_ids = [
-    azurerm_network_interface.azonefs_network_interface_external[count.index].id,
-    azurerm_network_interface.azonefs_network_interface_internal[count.index].id,
-  ]
-
-  os_profile {
-    admin_username = var.cluster_admin_username
-    admin_password = var.cluster_admin_password
-    computer_name  = "${local.internal_cluster_id}-node-${count.index}"
-
-    # OneFS requires json on a single line and it must be double base64 encoded.
-    custom_data = base64encode(base64encode(jsonencode(jsondecode(
-      templatefile("${path.module}/machineid.template.json", {
-        jdev                     = var.jdev
+  acs = jsondecode(
+    templatefile(
+      "${path.module}/acs.tftpl", {
         addr_range_offset        = var.addr_range_offset,
-        max_num_nodes            = var.max_num_nodes,
+        admin_password           = var.cluster_admin_password,
         cluster_name             = var.cluster_name,
         cluster_nodes            = var.cluster_nodes,
-        node_number              = count.index,
-        admin_password           = var.cluster_admin_password,
-        root_password            = var.cluster_root_password,
-        dns_servers              = var.dns_servers,
         dns_domains              = var.dns_domains,
-        internal_prefix          = var.internal_prefix
-        internal_gateway_address = var.internal_gateway_address == null ? cidrhost(var.internal_prefix, 1) : var.internal_gateway_address,
-        external_prefix          = var.external_prefix,
+        dns_servers              = var.dns_servers,
         external_gateway_address = var.external_gateway_address == null ? cidrhost(var.external_prefix, 1) : var.external_gateway_address,
+        external_prefix          = var.external_prefix,
+        internal_gateway_address = var.internal_gateway_address == null ? cidrhost(var.internal_prefix, 1) : var.internal_gateway_address,
+        internal_prefix          = var.internal_prefix
+        max_num_nodes            = var.max_num_nodes
+        root_password            = var.cluster_root_password,
         smartconnect_zone        = var.smartconnect_zone,
-        ocm_endpoint             = var.ocm_endpoint,
         timezone                 = var.timezone,
-        drive_size               = var.data_disk_size,
-        num_drives               = var.data_disks_per_node,
-      })
-    ))))
+      }
+    )
+  )
+}
 
-  }
+resource "azurerm_resource_group_template_deployment" "azonefs_node" {
+  count               = var.cluster_nodes
+  name                = "${local.internal_cluster_id}-node-${count.index}-deployment-${uuid()}"
+  resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
+  deployment_mode     = "Incremental"
+  template_content    = file("${path.module}/vm.json")
+  parameters_content = jsonencode({
+    "name" : {
+      value = "${local.internal_cluster_id}-node-${count.index}"
+    },
+    "location" : {
+      value = data.azurerm_resource_group.azonefs_resource_group.location
+    },
+    "sku" : {
+      value = var.node_size
+    },
+    "os_disk_type" : {
+      value = var.os_disk_type
+    },
+    "data_disk_type" : {
+      value = var.data_disk_type
+    },
+    "data_disk_size" : {
+      value = var.data_disk_size
+    },
+    "data_disk_count" : {
+      value = var.data_disks_per_node
+    },
+    "avset_id" : {
+      value = azurerm_availability_set.azonefs_aset.id
+    },
+    "ppg_id" : {
+      value = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
+    },
+    "image_id" : {
+      value = var.image_id
+    },
+    "user_data" : {
+      value = base64encode(format(count.index != 0 ? jsonencode(local.mid) : jsonencode(merge(local.mid, local.acs)), count.index))
+    },
+    "internal_nic_id" : {
+      value = azurerm_network_interface.azonefs_network_interface_internal[count.index].id
+    },
+    "external_nic_id" : {
+      value = azurerm_network_interface.azonefs_network_interface_external[count.index].id
+    },
+    "storage_id" : {
+      value = azurerm_storage_account.bootdiag_storage_account.primary_blob_endpoint
+    }
+  })
 
   lifecycle {
-    ignore_changes = [os_profile]
+    ignore_changes = [name]
     precondition {
       condition     = var.cluster_nodes <= 20 && var.cluster_nodes <= var.max_num_nodes
       error_message = "PowerScale maximum number of nodes must be specified at cluster creation time and cannot scale more than 20 nodes."
     }
-  }
-
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
-
-  storage_image_reference {
-    id = var.image_id
-  }
-
-  delete_os_disk_on_termination = true
-  storage_os_disk {
-    name              = "${local.internal_cluster_id}-node-os-${count.index}"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = var.os_disk_type
-  }
-
-  delete_data_disks_on_termination = true
-  dynamic "storage_data_disk" {
-    for_each = range(var.data_disks_per_node)
-
-    content {
-      create_option     = "Empty"
-      lun               = storage_data_disk.key
-      name              = "${local.internal_cluster_id}-node-data-${count.index}-${storage_data_disk.key}"
-      disk_size_gb      = var.data_disk_size
-      managed_disk_type = var.data_disk_type
-    }
-  }
-
-  boot_diagnostics {
-    enabled     = true
-    storage_uri = azurerm_storage_account.bootdiag_storage_account.primary_blob_endpoint
   }
 
   depends_on = [
