@@ -135,8 +135,11 @@ locals {
       drive_size        = var.data_disk_size,
       external_prefix   = var.external_prefix,
       internal_prefix   = var.internal_prefix,
-      jdev              = var.jdev
+      jdev              = jsonencode(var.jdev)
       num_drives        = var.data_disks_per_node,
+      lj                = startswith(var.jdev, "bay") ? true : false
+      journal_bays      = startswith(var.jdev, "bay") ? 1 : 0
+      journal_type      = startswith(var.jdev, "bay") ? 1 : 8 # Assume NVDIMM
     })
   )
 
