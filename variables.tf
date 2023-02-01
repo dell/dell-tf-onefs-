@@ -44,14 +44,8 @@ variable "update_domain_count" {
   default = 20
 }
 
-variable "internal_prefix" {
-}
-
 variable "internal_gateway_address" {
   default = null
-}
-
-variable "external_prefix" {
 }
 
 variable "internal_subnet_name" {

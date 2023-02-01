@@ -53,6 +53,11 @@ data "azurerm_subnet" "azonefs_external_subnet" {
   virtual_network_name = data.azurerm_virtual_network.azonefs_virtual_network.name
 }
 
+locals {
+  internal_prefix = data.azurerm_subnet.azonefs_internal_subnet.address_prefixes[0]
+  external_prefix = data.azurerm_subnet.azonefs_external_subnet.address_prefixes[0]
+}
+
 resource "azurerm_network_security_group" "azonefs_network_security_group" {
   name                = "${local.internal_cluster_id}-network-security-group"
   location            = data.azurerm_resource_group.azonefs_resource_group.location
@@ -70,7 +75,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_internal" {
     name                          = "internal"
     subnet_id                     = data.azurerm_subnet.azonefs_internal_subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = cidrhost(var.internal_prefix, count.index + var.addr_range_offset)
+    private_ip_address            = cidrhost(local.internal_prefix, count.index + var.addr_range_offset)
   }
 }
 
@@ -97,7 +102,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_external" {
     name                          = "external"
     subnet_id                     = data.azurerm_subnet.azonefs_external_subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = cidrhost(var.external_prefix, count.index + var.addr_range_offset)
+    private_ip_address            = cidrhost(local.external_prefix, count.index + var.addr_range_offset)
     primary                       = true
   }
 
@@ -133,8 +138,8 @@ locals {
       addr_range_offset = var.addr_range_offset
       cluster_nodes     = var.cluster_nodes,
       drive_size        = var.data_disk_size,
-      external_prefix   = var.external_prefix,
-      internal_prefix   = var.internal_prefix,
+      external_prefix   = local.external_prefix,
+      internal_prefix   = local.internal_prefix,
       jdev              = jsonencode(var.jdev)
       num_drives        = var.data_disks_per_node,
       lj                = startswith(var.jdev, "bay") ? true : false
@@ -152,10 +157,10 @@ locals {
         cluster_nodes            = var.cluster_nodes,
         dns_domains              = var.dns_domains,
         dns_servers              = var.dns_servers,
-        external_gateway_address = var.external_gateway_address == null ? cidrhost(var.external_prefix, 1) : var.external_gateway_address,
-        external_prefix          = var.external_prefix,
-        internal_gateway_address = var.internal_gateway_address == null ? cidrhost(var.internal_prefix, 1) : var.internal_gateway_address,
-        internal_prefix          = var.internal_prefix
+        external_gateway_address = var.external_gateway_address == null ? cidrhost(local.external_prefix, 1) : var.external_gateway_address,
+        external_prefix          = local.external_prefix,
+        internal_gateway_address = var.internal_gateway_address == null ? cidrhost(local.internal_prefix, 1) : var.internal_gateway_address,
+        internal_prefix          = local.internal_prefix
         max_num_nodes            = var.max_num_nodes
         root_password            = var.cluster_root_password,
         smartconnect_zone        = var.smartconnect_zone,
