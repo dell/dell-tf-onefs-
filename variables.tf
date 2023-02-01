@@ -17,16 +17,6 @@ variable "cluster_id" {
 
 variable "node_size" {
   default = "Standard_D8ds_v4"
-  validation {
-    condition = contains(
-      ["Standard_D2ds_v4", "Standard_D4ds_v4", "Standard_D8ds_v4", "Standard_D16ds_v4",
-        "Standard_D32ds_v4", "Standard_D48ds_v4", "Standard_D64ds_v4",
-        "Standard_E2ds_v4", "Standard_E4ds_v4", "Standard_E8ds_v4", "Standard_E16ds_v4",
-      "Standard_E20ds_v4", "Standard_E32ds_v4", "Standard_E48ds_v4", "Standard_E64ds_v4"],
-      var.node_size
-    )
-    error_message = "Error: SKU is not valid. Possible SKUs\nStandard_D2ds_v4\nStandard_D4ds_v4\nStandard_D8ds_v4\nStandard_D16ds_v4\nStandard_D32ds_v4\nStandard_D48ds_v4\nStandard_D64ds_v4\nStandard_E2ds_v4\nStandard_E4ds_v4\nStandard_E8ds_v4\nStandard_E16ds_v4\nStandard_E20ds_v4\nStandard_E32ds_v4\nStandard_E48ds_v4\nStandard_E64ds_v4"
-  }
 }
 
 variable "cluster_name" {
@@ -35,8 +25,8 @@ variable "cluster_name" {
 variable "cluster_nodes" {
   default = 3
   validation {
-    condition     = var.cluster_nodes <= 6
-    error_message = "PowerScale clusters on Azure must be less then or equal to 6 nodes."
+    condition     = var.cluster_nodes <= 20
+    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
   }
 }
 
@@ -65,10 +55,10 @@ variable "addr_range_offset" {
 
 # The max number of nodes we will scale up to
 variable "max_num_nodes" {
-  default = 6
+  default = 20
   validation {
-    condition     = var.max_num_nodes <= 6
-    error_message = "PowerScale clusters on Azure must be less then or equal to 6 nodes."
+    condition     = var.max_num_nodes <= 20
+    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
   }
 }
 
