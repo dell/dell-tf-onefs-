@@ -11,15 +11,15 @@ variable "resource_group" {
 variable "network_id" {
 }
 
-variable "cluster_id" {
-  default = null
-}
-
 variable "node_size" {
   default = "Standard_D8ds_v4"
 }
 
 variable "cluster_name" {
+  validation {
+    condition     = length(var.cluster_name) <= 11 && can(regex("^[a-z]+[a-z0-9-]*$", var.cluster_name))
+    error_message = "The supplied cluster name must contain only numbers and lower case letters starting with a letter and less than 12 characters."
+  }
 }
 
 variable "cluster_nodes" {
@@ -121,10 +121,6 @@ variable "ocm_endpoint" {
   type        = string
   description = "Endpoint for OneFS cluster to communicate with OCM."
   default     = ""
-}
-
-variable "storage_account_name" {
-  default = null
 }
 
 variable "resource_tags" {

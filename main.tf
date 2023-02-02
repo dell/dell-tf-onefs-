@@ -4,31 +4,22 @@ provider "azurerm" {
 }
 
 locals {
-  network_id_fields   = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
-  internal_cluster_id = var.cluster_id != null ? var.cluster_id : var.cluster_name
+  network_id_fields = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
 }
 
 
 data "azurerm_resource_group" "azonefs_resource_group" {
-  name = var.resource_group != null ? var.resource_group : "${local.internal_cluster_id}-resource-group"
-}
-
-resource "azurerm_storage_account" "bootdiag_storage_account" {
-  name                     = var.storage_account_name != null ? var.storage_account_name : "${local.internal_cluster_id}stact"
-  resource_group_name      = data.azurerm_resource_group.azonefs_resource_group.name
-  location                 = data.azurerm_resource_group.azonefs_resource_group.location
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
+  name = var.resource_group != null ? var.resource_group : "${var.cluster_name}-resource-group"
 }
 
 resource "azurerm_proximity_placement_group" "azonefs_proximity_placement_group" {
-  name                = "${local.internal_cluster_id}-proximity-placement-group"
+  name                = "${var.cluster_name}-proximity-placement-group"
   location            = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
 }
 
 resource "azurerm_availability_set" "azonefs_aset" {
-  name                         = "${local.internal_cluster_id}-aset"
+  name                         = "${var.cluster_name}-aset"
   location                     = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name          = data.azurerm_resource_group.azonefs_resource_group.name
   proximity_placement_group_id = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
@@ -59,14 +50,14 @@ locals {
 }
 
 resource "azurerm_network_security_group" "azonefs_network_security_group" {
-  name                = "${local.internal_cluster_id}-network-security-group"
+  name                = "${var.cluster_name}-network-security-group"
   location            = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
 }
 
 resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   count                         = var.cluster_nodes
-  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-internal"
+  name                          = "${var.cluster_name}-${count.index}-network-interface-internal"
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
@@ -93,7 +84,7 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 
 resource "azurerm_network_interface" "azonefs_network_interface_external" {
   count                         = var.cluster_nodes
-  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-external"
+  name                          = "${var.cluster_name}-${count.index}-network-interface-external"
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
@@ -172,13 +163,13 @@ locals {
 
 resource "azurerm_resource_group_template_deployment" "azonefs_node" {
   count               = var.cluster_nodes
-  name                = "${local.internal_cluster_id}-node-${count.index}-deployment-${uuid()}"
+  name                = "${var.cluster_name}-node-${count.index}-deployment-${uuid()}"
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   deployment_mode     = "Incremental"
   template_content    = file("${path.module}/vm.json")
   parameters_content = jsonencode({
     "name" : {
-      value = "${local.internal_cluster_id}-node-${count.index}"
+      value = "${var.cluster_name}-node-${count.index}"
     },
     "location" : {
       value = data.azurerm_resource_group.azonefs_resource_group.location
@@ -215,9 +206,6 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
     },
     "external_nic_id" : {
       value = azurerm_network_interface.azonefs_network_interface_external[count.index].id
-    },
-    "storage_id" : {
-      value = azurerm_storage_account.bootdiag_storage_account.primary_blob_endpoint
     }
   })
 

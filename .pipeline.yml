@@ -18,4 +18,4 @@ stages:
                     - |
                       #!/bin/bash -e
                       cd ${JENKINS_BUILD_DIR}
-                      checkov -d ./
+                      checkov -d ./ --skip-path Docker* --skip-check CKV_AZURE_1

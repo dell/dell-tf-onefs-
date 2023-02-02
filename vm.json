@@ -46,9 +46,6 @@
         },
         "external_nic_id": {
             "type": "String"
-        },
-        "storage_id": {
-            "type": "String"
         }
     },
     "variables": {},
@@ -131,8 +128,7 @@
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
-                        "enabled": true,
-                        "storageUri": "[parameters('storage_id')]"
+                        "enabled": true
                     }
                 }
             }
