@@ -1,0 +1,137 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "String"
+        },
+        "location": {
+            "type": "String",
+            "defaultValue" : "centralus"
+        },
+        "sku": {
+            "type": "String",
+            "defaultValue" : "Standard_D8ds_v4"
+        },
+        "os_disk_type": {
+            "type": "String",
+            "defaultValue" : "Premium_LRS"
+        },
+        "data_disk_type": {
+            "type": "String",
+            "defaultValue" : "Premium_LRS"
+        },
+        "data_disk_size": {
+            "type": "int",
+            "defaultValue" : 12
+        },
+        "data_disk_count": {
+            "type": "int",
+            "defaultValue" : 3
+        },
+        "avset_id": {
+            "type": "String"
+        },
+        "ppg_id": {
+            "type": "String"
+        },
+        "image_id": {
+            "type": "String"
+        },
+        "user_data": {
+            "type": "String"
+        },
+        "internal_nic_id": {
+            "type": "String"
+        },
+        "external_nic_id": {
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2022-08-01",
+            "name": "[parameters('name')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "availabilitySet": {
+                    "id": "[parameters('avset_id')]"
+                },
+                "proximityPlacementGroup": {
+                    "id": "[parameters('ppg_id')]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('sku')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "id": "[parameters('image_id')]"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[format('{0}-osdisk', parameters('name'))]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "deleteOption" : "Delete",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('os_disk_type')]"
+                        }
+                    },
+                    "copy" : [
+                        {
+                            "name" : "dataDisks",
+                            "count" : "[parameters('data_disk_count')]",
+                            "input" : {
+                                "lun": "[copyIndex('dataDisks')]",
+                                "name": "[format('{0}-data-{1}', parameters('name'), copyIndex('dataDisks', 1))]",
+                                "createOption": "Empty",
+                                "caching": "None",
+                                "deleteOption" : "Delete",
+                                "managedDisk": {
+                                    "storageAccountType": "[parameters('data_disk_type')]"
+                                },
+                                "diskSizeGB": "[parameters('data_disk_size')]"
+                            }
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('name')]",
+                    "adminUsername": "azonefs",
+                    "adminPassword" : "aaaaaaaaaaA1!",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false,
+                        "provisionVMAgent": false
+                    }
+                },
+                "priority" : "Regular",
+                "userData" : "[parameters('user_data')]",
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[parameters('external_nic_id')]",
+                            "properties": {
+                                "primary": true,
+                                "deleteOption": "Detach"
+                            }
+                        },
+                        {
+                            "id": "[parameters('internal_nic_id')]",
+                            "properties": {
+                                "primary": false,
+                                "deleteOption": "Detach"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        }
+    ]
+}

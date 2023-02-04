@@ -1,0 +1,37 @@
+{
+  "vonefs_skip_newfs_prompt": true,
+  "hal_num_ssds": 0,
+  "hal_node_type": "Azure",
+  "hal_chassis_type": 20,
+  "hal_linear_journal": ${lj},
+  "hal_internal_interfaces": [
+    "hn1"
+  ],
+  "hal_dongle_serialno": "SV200-930073-%04d",
+  "hal_jdisk_id": ${jdev},
+  "hal_num_journal_bays": ${journal_bays},
+  "hal_dram_size": 68719476736,
+  "hal_dongle_sysconfig": "7331-1000-7331",
+  "hal_sata_disks": true,
+  "hal_nvram_type": ${journal_type},
+  "hal_num_blocks_ssd": 0,
+  "hal_hdd_drives": true,
+  "hal_external_gige_interfaces": [
+    "hn0"
+  ],
+  "hal_external_10gige_interfaces": [],
+  "hal_num_hdds": ${num_drives},
+  "hal_num_blocks_hdd": ${drive_size * (pow(1024, 2)) * (1024 / 512)},
+  "hal_ssd_drives": false,
+  "hal_is_vonefs": true,
+  "hal_node_class": "storage",
+  "hal_ssd_capacity": 0,
+  "hal_sas_disks": true,
+  "hal_supports_vmx": true,
+  "hal_is_aws_node": false,
+  "devices": ${jsonencode([for index in range(cluster_nodes) : {
+    "serial_number": "SV200-930073-${format("%04d", index)}",
+    "int-a": cidrhost(internal_prefix, index + addr_range_offset)
+    "ext-1": cidrhost(external_prefix, index + addr_range_offset)
+  }])}
+}
