@@ -4,6 +4,11 @@
 terraform {
 
 }
+
+variable "cluster_id" {
+  default = null
+}
+
 variable "resource_group" {
   default = null
 }
@@ -165,3 +170,20 @@ variable "jdev" {
   type    = string
   default = "bay.0"
 }
+
+variable "internal_nsg_name" {
+  type = string
+}
+
+variable "internal_nsg_resource_group" {
+  type = string
+}
+
+variable "external_nsg_name" {
+  type = string
+}
+
+variable "external_nsg_resource_group" {
+  type = string
+}
+

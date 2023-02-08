@@ -7,24 +7,29 @@ terraform {
   }
 }
 
+#provider "azurerm" {
+#  features {}
+#  skip_provider_registration = true
+#}
 
 locals {
   network_id_fields = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
+  internal_cluster_id = var.cluster_id != null ? var.cluster_id : var.cluster_name
 }
 
 
 data "azurerm_resource_group" "azonefs_resource_group" {
-  name = var.resource_group != null ? var.resource_group : "${var.cluster_name}-resource-group"
+  name = var.resource_group != null ? var.resource_group : "${local.internal_cluster_id}-resource-group"
 }
 
 resource "azurerm_proximity_placement_group" "azonefs_proximity_placement_group" {
-  name                = "${var.cluster_name}-proximity-placement-group"
+  name                = "${local.internal_cluster_id}-proximity-placement-group"
   location            = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
 }
 
 resource "azurerm_availability_set" "azonefs_aset" {
-  name                         = "${var.cluster_name}-aset"
+  name                         = "${local.internal_cluster_id}-aset"
   location                     = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name          = data.azurerm_resource_group.azonefs_resource_group.name
   proximity_placement_group_id = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
@@ -54,15 +59,20 @@ locals {
   external_prefix = data.azurerm_subnet.azonefs_external_subnet.address_prefixes[0]
 }
 
-resource "azurerm_network_security_group" "azonefs_network_security_group" {
-  name                = "${var.cluster_name}-network-security-group"
-  location            = data.azurerm_resource_group.azonefs_resource_group.location
-  resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
+data "azurerm_network_security_group" "azonefs_internal_network_security_group" {
+  name                = var.internal_nsg_name
+  resource_group_name = var.internal_nsg_resource_group
 }
+
+data "azurerm_network_security_group" "azonefs_external_network_security_group" {
+  name                = var.internal_nsg_name
+  resource_group_name = var.internal_nsg_resource_group
+}
+
 
 resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   count                         = var.cluster_nodes
-  name                          = "${var.cluster_name}-${count.index}-network-interface-internal"
+  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-internal"
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
@@ -78,18 +88,17 @@ resource "azurerm_network_interface" "azonefs_network_interface_internal" {
 resource "azurerm_network_interface_security_group_association" "azonefs_network_interface_internal_nsg_association" {
   count                     = var.cluster_nodes
   network_interface_id      = azurerm_network_interface.azonefs_network_interface_internal[count.index].id
-  network_security_group_id = azurerm_network_security_group.azonefs_network_security_group.id
+  network_security_group_id = data.azurerm_network_security_group.azonefs_internal_network_security_group.id
   # The depends_one is needed if we don't define a network security rule. Otherwise Terraform will attempt to
   # create this association before it creates the network security group which leads to an error.
   depends_on = [
-    azurerm_network_security_group.azonefs_network_security_group,
     azurerm_network_interface.azonefs_network_interface_internal
   ]
 }
 
 resource "azurerm_network_interface" "azonefs_network_interface_external" {
   count                         = var.cluster_nodes
-  name                          = "${var.cluster_name}-${count.index}-network-interface-external"
+  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-external"
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
@@ -118,13 +127,11 @@ resource "azurerm_network_interface" "azonefs_network_interface_external" {
 resource "azurerm_network_interface_security_group_association" "azonefs_network_interface_external_nsg_association" {
   count                     = var.cluster_nodes
   network_interface_id      = azurerm_network_interface.azonefs_network_interface_external[count.index].id
-  network_security_group_id = azurerm_network_security_group.azonefs_network_security_group.id
+  network_security_group_id = data.azurerm_network_security_group.azonefs_external_network_security_group.id
   # The depends_one is needed if we don't define a network security rule. Otherwise Terraform will attempt to
   # create this association before it creates the network security group which leads to an error.
   depends_on = [
-    azurerm_network_security_group.azonefs_network_security_group,
     azurerm_network_interface.azonefs_network_interface_external
-
   ]
 }
 
@@ -168,13 +175,13 @@ locals {
 
 resource "azurerm_resource_group_template_deployment" "azonefs_node" {
   count               = var.cluster_nodes
-  name                = "${var.cluster_name}-node-${count.index}-deployment-${uuid()}"
+  name                = "${local.internal_cluster_id}-node-${count.index}-deployment-${uuid()}"
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   deployment_mode     = "Incremental"
   template_content    = file("${path.module}/vm.json")
   parameters_content = jsonencode({
     "name" : {
-      value = "${var.cluster_name}-node-${count.index}"
+      value = "${local.internal_cluster_id}-node-${count.index}"
     },
     "location" : {
       value = data.azurerm_resource_group.azonefs_resource_group.location
@@ -223,6 +230,10 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
   }
 
   depends_on = [
+    azurerm_network_interface.azonefs_network_interface_external,
+    azurerm_network_interface.azonefs_network_interface_internal,
+    azurerm_proximity_placement_group.azonefs_proximity_placement_group,
+    azurerm_availability_set.azonefs_aset,
     azurerm_network_interface_security_group_association.azonefs_network_interface_external_nsg_association,
     azurerm_network_interface_security_group_association.azonefs_network_interface_internal_nsg_association
   ]
@@ -235,4 +246,15 @@ output "ip_addresses" {
 output "internal_ip_addresses" {
   value = azurerm_network_interface.azonefs_network_interface_internal[*].ip_configuration[0].private_ip_address
 }
+
+output "internal_nics" {
+  value = azurerm_network_interface.azonefs_network_interface_internal[*].id
+}
+
+output "external_nics" {
+  value = azurerm_network_interface.azonefs_network_interface_external[*].id
+}
+
+
+
 
