@@ -7,10 +7,10 @@ terraform {
   }
 }
 
-#provider "azurerm" {
-#  features {}
-#  skip_provider_registration = true
-#}
+provider "azurerm" {
+  features {}
+  skip_provider_registration = true
+}
 
 locals {
   network_id_fields = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
