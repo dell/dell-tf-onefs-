@@ -19,3 +19,35 @@ stages:
                       #!/bin/bash -e
                       cd ${JENKINS_BUILD_DIR}
                       checkov -d ./ --skip-path Docker* --skip-check CKV_AZURE_1
+    publish:
+        name: "Publish"
+        steps:
+            tag:
+                name: "Tag release"
+                command:
+                    - |
+                      #!/bin/bash -e
+                      printenv
+                      if [[ "$JENKINS_BASE" != "$JENKINS_BRANCH" ]]; then
+                          echo "Skipped Documentation deploy stage"
+                          exit 0
+                      fi
+                      cd ${JENKINS_BUILD_DIR}
+                      git config --global user.email "deploy@jenkins-ci.org"
+                      git config --global user.name "Deployment Bot (from Jenkins CI)"
+                      git clean -fdx
+                      git checkout release
+                      python <<EOF
+                      import os
+                      with open("releases.txt") as fp:
+                          x = set(f.strip() for f in fp.readlines())
+                      for f in os.listdir('./'):
+                          if f not in x:
+                              os.unlink(f)
+                      EOF
+                      git add -A
+                      git commit -m "Jenkins CI automated release."
+                      git push origin HEAD:release
+                      git tag -a -m "Jenkins CI automated release." "release-$(git rev-parse --short HEAD)" $(git rev-parse HEAD)
+
+
