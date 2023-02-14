@@ -4,6 +4,11 @@
 terraform {
 
 }
+
+variable "cluster_id" {
+  default = null
+}
+
 variable "resource_group" {
   default = null
 }
@@ -11,32 +16,22 @@ variable "resource_group" {
 variable "network_id" {
 }
 
-variable "cluster_id" {
-  default = null
-}
-
 variable "node_size" {
   default = "Standard_D8ds_v4"
-  validation {
-    condition = contains(
-      ["Standard_D2ds_v4", "Standard_D4ds_v4", "Standard_D8ds_v4", "Standard_D16ds_v4",
-        "Standard_D32ds_v4", "Standard_D48ds_v4", "Standard_D64ds_v4",
-        "Standard_E2ds_v4", "Standard_E4ds_v4", "Standard_E8ds_v4", "Standard_E16ds_v4",
-      "Standard_E20ds_v4", "Standard_E32ds_v4", "Standard_E48ds_v4", "Standard_E64ds_v4"],
-      var.node_size
-    )
-    error_message = "Error: SKU is not valid. Possible SKUs\nStandard_D2ds_v4\nStandard_D4ds_v4\nStandard_D8ds_v4\nStandard_D16ds_v4\nStandard_D32ds_v4\nStandard_D48ds_v4\nStandard_D64ds_v4\nStandard_E2ds_v4\nStandard_E4ds_v4\nStandard_E8ds_v4\nStandard_E16ds_v4\nStandard_E20ds_v4\nStandard_E32ds_v4\nStandard_E48ds_v4\nStandard_E64ds_v4"
-  }
 }
 
 variable "cluster_name" {
+  validation {
+    condition     = length(var.cluster_name) <= 11 && can(regex("^[a-z]+[a-z0-9-]*$", var.cluster_name))
+    error_message = "The supplied cluster name must contain only numbers and lower case letters starting with a letter and less than 12 characters."
+  }
 }
 
 variable "cluster_nodes" {
   default = 3
   validation {
-    condition     = var.cluster_nodes <= 6
-    error_message = "PowerScale clusters on Azure must be less then or equal to 6 nodes."
+    condition     = var.cluster_nodes <= 20
+    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
   }
 }
 
@@ -44,14 +39,8 @@ variable "update_domain_count" {
   default = 20
 }
 
-variable "internal_prefix" {
-}
-
 variable "internal_gateway_address" {
   default = null
-}
-
-variable "external_prefix" {
 }
 
 variable "internal_subnet_name" {
@@ -71,10 +60,10 @@ variable "addr_range_offset" {
 
 # The max number of nodes we will scale up to
 variable "max_num_nodes" {
-  default = 6
+  default = 20
   validation {
-    condition     = var.max_num_nodes <= 6
-    error_message = "PowerScale clusters on Azure must be less then or equal to 6 nodes."
+    condition     = var.max_num_nodes <= 20
+    error_message = "PowerScale clusters on Azure must be less then or equal to 20 nodes."
   }
 }
 
@@ -139,10 +128,6 @@ variable "ocm_endpoint" {
   default     = ""
 }
 
-variable "storage_account_name" {
-  default = null
-}
-
 variable "resource_tags" {
   type = map(string)
   default = {
@@ -185,3 +170,20 @@ variable "jdev" {
   type    = string
   default = "bay.0"
 }
+
+variable "internal_nsg_name" {
+  type = string
+}
+
+variable "internal_nsg_resource_group" {
+  type = string
+}
+
+variable "external_nsg_name" {
+  type = string
+}
+
+variable "external_nsg_resource_group" {
+  type = string
+}
+

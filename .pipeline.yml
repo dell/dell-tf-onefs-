@@ -1,0 +1,21 @@
+# .pipeline.yml workflow for building test stability CI
+docker: "docker.west.isilon.com/jenkins/jenkins-base"
+reuseWorkspace: true
+env:
+    PIP_INDEX_URL: http://artifactory.west.isilon.com/artifactory/api/pypi/pypi-repo/simple
+    PIP_TRUSTED_HOST: artifactory.west.isilon.com
+    SSH_OPTS: "-oBatchMode=yes -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null"
+stages:
+    checkov:
+        name: "Checkov Checks"
+        steps:
+            checkov_checks:
+                name: "Checkov run checks"
+                language:
+                    python: 3.10
+                command:
+                    - pip install checkov
+                    - |
+                      #!/bin/bash -e
+                      cd ${JENKINS_BUILD_DIR}
+                      checkov -d ./ --skip-path Docker* --skip-check CKV_AZURE_1
