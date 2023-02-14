@@ -1,5 +1,5 @@
 # .pipeline.yml workflow for building test stability CI
-docker: "docker.west.isilon.com/jenkins/jenkins-base"
+docker: "docker.west.isilon.com/jenkins/jenkins-base-ssh"
 reuseWorkspace: true
 env:
     PIP_INDEX_URL: http://artifactory.west.isilon.com/artifactory/api/pypi/pypi-repo/simple
@@ -26,8 +26,7 @@ stages:
                 name: "Tag release"
                 command:
                     - |
-                      #!/bin/bash -e
-                      printenv
+                      #!/bin/bash -ex
                       if [[ "$JENKINS_BASE" != "$JENKINS_BRANCH" ]]; then
                           echo "Skipped Documentation deploy stage"
                           exit 0
@@ -36,18 +35,18 @@ stages:
                       git config --global user.email "deploy@jenkins-ci.org"
                       git config --global user.name "Deployment Bot (from Jenkins CI)"
                       git clean -fdx
-                      git checkout release
-                      python <<EOF
-                      import os
-                      with open("releases.txt") as fp:
-                          x = set(f.strip() for f in fp.readlines())
-                      for f in os.listdir('./'):
-                          if f not in x:
-                              os.unlink(f)
-                      EOF
+                      mkdir .release
+                      while read line; do
+                          cp -r $line .release
+                      done < releases.txt
+                      git reset --hard origin/release
+                      rm -rf ./*
+                      mv -f .release/* ./
+                      rmdir .release
                       git add -A
                       git commit -m "Jenkins CI automated release."
                       git push origin HEAD:release
-                      git tag -a -m "Jenkins CI automated release." "release-$(git rev-parse --short HEAD)" $(git rev-parse HEAD)
-
-
+                      TAG="release-$(git rev-parse --short HEAD)"
+                      HASH=`git rev-parse HEAD`
+                      git tag -a -m "Jenkins CI automated release." "$TAG" "$HASH"
+                      git push origin "$TAG"
