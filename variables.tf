@@ -22,8 +22,8 @@ variable "node_size" {
 
 variable "cluster_name" {
   validation {
-    condition     = length(var.cluster_name) <= 11 && can(regex("^[a-z]+[a-z0-9-]*$", var.cluster_name))
-    error_message = "The supplied cluster name must contain only numbers and lower case letters starting with a letter and less than 12 characters."
+    condition     = length(var.cluster_name) <= 40 && can(regex("^[a-zA-Z]+[a-zA-Z0-9-]*$", var.cluster_name))
+    error_message = "The supplied cluster name must contain only numbers and letters starting with a letter and less than 41 characters."
   }
 }
 
