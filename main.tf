@@ -1,15 +1,10 @@
-
-terraform {
-  required_providers {
-    azurerm = {
-      version = "~>3.00"
-    }
-  }
-}
+/**
+ Main terraform Script to deploy PowerScale Cluster in Azure
+*/
 
 provider "azurerm" {
-  features {}
   skip_provider_registration = true
+  features {}
 }
 
 locals {
@@ -20,6 +15,7 @@ locals {
 
 data "azurerm_resource_group" "azonefs_resource_group" {
   name = var.resource_group != null ? var.resource_group : "${local.internal_cluster_id}-resource-group"
+  #name = azurerm_resource_group.rg.name != null ? azurerm_resource_group.rg.name : "${local.internal_cluster_id}-resource-group"
 }
 
 resource "azurerm_proximity_placement_group" "azonefs_proximity_placement_group" {
@@ -65,8 +61,8 @@ data "azurerm_network_security_group" "azonefs_internal_network_security_group" 
 }
 
 data "azurerm_network_security_group" "azonefs_external_network_security_group" {
-  name                = var.internal_nsg_name
-  resource_group_name = var.internal_nsg_resource_group
+  name                = var.external_nsg_name
+  resource_group_name = var.external_nsg_resource_group
 }
 
 
@@ -238,23 +234,3 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
     azurerm_network_interface_security_group_association.azonefs_network_interface_internal_nsg_association
   ]
 }
-
-output "ip_addresses" {
-  value = azurerm_network_interface.azonefs_network_interface_external[*].ip_configuration[0].private_ip_address
-}
-
-output "internal_ip_addresses" {
-  value = azurerm_network_interface.azonefs_network_interface_internal[*].ip_configuration[0].private_ip_address
-}
-
-output "internal_nics" {
-  value = azurerm_network_interface.azonefs_network_interface_internal[*].id
-}
-
-output "external_nics" {
-  value = azurerm_network_interface.azonefs_network_interface_external[*].id
-}
-
-
-
-
