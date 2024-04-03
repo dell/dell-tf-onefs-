@@ -13,7 +13,7 @@ provider "azurerm" {
 }
 
 locals {
-  network_id_fields = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
+  network_id_fields   = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
   internal_cluster_id = var.cluster_id != null ? var.cluster_id : var.cluster_name
 }
 
