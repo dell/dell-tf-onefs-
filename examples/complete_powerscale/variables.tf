@@ -1,10 +1,3 @@
-# Old versions of terraform need to enable variable_validation
-# so we can validate the passwords. New versions do not need this.
-# TODO(tswanson): What version are we using?
-terraform {
-
-}
-
 variable "cluster_id" {
   default = null
 }
@@ -41,12 +34,6 @@ variable "update_domain_count" {
 
 variable "internal_gateway_address" {
   default = null
-}
-
-variable "internal_subnet_name" {
-}
-
-variable "external_subnet_name" {
 }
 
 # The offset into the address ranges where we will begin our IP ranges
@@ -171,56 +158,21 @@ variable "jdev" {
   default = "bay.0"
 }
 
-variable "internal_nsg_name" {
+variable "cloud_provider" {
   type = string
 }
 
-variable "internal_nsg_resource_group" {
+variable "subscription_id" {
+  type = string
+}
+variable "vnet_name" {
   type = string
 }
 
-variable "external_nsg_name" {
+variable "vnet_resource_group_name" {
   type = string
-}
-
-variable "external_nsg_resource_group" {
-  type = string
-}
-
-#########################################################################
-# Required resources variables
-########################################################################
-
-variable "subscription_id" {}
-variable "vnet_resource_group_name" {}
-variable "vnet_name" {}
-variable "cloud_provider" {}
-
-# Provide Resource group requirements
-variable "resource_group_location" {
-  type        = string
-  default     = "centralus"
-  description = "Location of the resource group and network security group"
-}
-
-variable "resource_group_name_suffix" {
-  type        = string
-  default     = "rg"
-  description = "Suffix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
-}
-
-variable "network_security_group_name_suffix" {
-  type        = string
-  default     = "nsg"
-  description = "Suffix of the security group name that's combined with a random ID so name is unique in your Azure subscription."
-}
-
-variable "subnet_suffix" {
-  default = "subnet"
 }
 
 variable "get_subnets" {
   default = "true"
 }
-
-#############################################################################################
