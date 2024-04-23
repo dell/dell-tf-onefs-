@@ -158,13 +158,12 @@ variable "jdev" {
   default = "bay.0"
 }
 
-variable "cloud_provider" {
-  type = string
-}
 
 variable "subscription_id" {
   type = string
 }
+
+
 variable "vnet_name" {
   type = string
 }
@@ -175,4 +174,12 @@ variable "vnet_resource_group_name" {
 
 variable "get_subnets" {
   default = "true"
+}
+
+variable "internal_prefix" {
+  type = string
+}
+
+variable "external_prefix" {
+  type = string
 }

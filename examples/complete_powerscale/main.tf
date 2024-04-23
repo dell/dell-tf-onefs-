@@ -13,36 +13,30 @@ module "vsa_network_security_groups" {
 
 module "vsa_network_subnets" {
   source                   = "../../modules/network-subnets"
-  computer_name            = var.cluster_name
+  cluster_name             = var.cluster_name
   unique_id                = module.vsa_resource_groups.resource_unique_id
-  cloud_provider           = var.cloud_provider
-  subscription_id          = var.subscription_id
   vnet_name                = var.vnet_name
   vnet_resource_group_name = var.vnet_resource_group_name
+  external_prefix          = var.external_prefix
+  internal_prefix          = var.internal_prefix
 }
 
 module "powerscale" {
-  source                   = "../.."
-  subscription_id          = var.subscription_id
-  vnet_name                = var.vnet_name
-  vnet_resource_group_name = var.vnet_resource_group_name
-  image_id                 = var.image_id
-  cluster_admin_password   = var.cluster_admin_password
-  cluster_root_password    = var.cluster_root_password
-  cluster_name             = var.cluster_name
-  cluster_nodes            = var.cluster_nodes
-  max_num_nodes            = var.max_num_nodes
-  cloud_provider           = var.cloud_provider
-  smartconnect_zone        = var.smartconnect_zone
-
+  source                      = "../.."
+  subscription_id             = var.subscription_id
+  image_id                    = var.image_id
+  cluster_admin_password      = var.cluster_admin_password
+  cluster_root_password       = var.cluster_root_password
+  cluster_name                = var.cluster_name
+  cluster_nodes               = var.cluster_nodes
+  max_num_nodes               = var.max_num_nodes
+  smartconnect_zone           = var.smartconnect_zone
   external_nsg_name           = module.vsa_network_security_groups.network_security_group_external
   external_nsg_resource_group = module.vsa_resource_groups.resource_group_name
   external_subnet_name        = module.vsa_network_subnets.external_subnet_name
   internal_nsg_name           = module.vsa_network_security_groups.network_security_group_internal
   internal_nsg_resource_group = module.vsa_network_security_groups.resource_group_name
   internal_subnet_name        = module.vsa_network_subnets.internal_subnet_name
-
-  network_id     = var.network_id
-  resource_group = module.vsa_resource_groups.resource_group_name
-
+  network_id                  = var.network_id
+  resource_group              = module.vsa_resource_groups.resource_group_name
 }

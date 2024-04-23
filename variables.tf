@@ -190,37 +190,5 @@ variable "external_nsg_resource_group" {
 #########################################################################
 # Required resources variables
 ########################################################################
-
 variable "subscription_id" {}
-variable "vnet_resource_group_name" {}
-variable "vnet_name" {}
-variable "cloud_provider" {}
-
-# Provide Resource group requirements
-variable "resource_group_location" {
-  type        = string
-  default     = "centralus"
-  description = "Location of the resource group and network security group"
-}
-
-variable "resource_group_name_suffix" {
-  type        = string
-  default     = "rg"
-  description = "Suffix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
-}
-
-variable "network_security_group_name_suffix" {
-  type        = string
-  default     = "nsg"
-  description = "Suffix of the security group name that's combined with a random ID so name is unique in your Azure subscription."
-}
-
-variable "subnet_suffix" {
-  default = "subnet"
-}
-
-variable "get_subnets" {
-  default = "true"
-}
-
 #############################################################################################
