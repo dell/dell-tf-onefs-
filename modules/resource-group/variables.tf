@@ -1,6 +1,3 @@
-variable "subscription_id" {
-  default = null
-}
 
 variable "cluster_name" {
   default = null
@@ -17,3 +14,4 @@ variable "resource_group_name_suffix" {
   default     = "rg"
   description = "Suffix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
 }
+

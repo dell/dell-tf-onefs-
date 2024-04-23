@@ -1,22 +1,22 @@
-variable "subscription_id" {
-  default = null
-}
 
 variable "cluster_name" {
   default = null
 }
 
+
+variable "unique_id" {}
+
+
 variable "resource_group_name" {
   default = null
 }
-
-variable "unique_id" {}
 
 variable "network_security_group_location" {
   type        = string
   default     = "centralus"
   description = "Location of the network security group."
 }
+
 
 variable "network_security_group_name_suffix" {
   type        = string

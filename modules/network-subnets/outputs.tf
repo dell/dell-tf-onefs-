@@ -1,9 +1,9 @@
 output "internal_subnet" {
-  value = data.external.get_available_subnet.result.azure_internal_subnet
+  value = var.internal_prefix
 }
 
 output "external_subnet" {
-  value = data.external.get_available_subnet.result.azure_external_subnet
+  value = var.external_prefix
 }
 
 output "internal_subnet_name" {

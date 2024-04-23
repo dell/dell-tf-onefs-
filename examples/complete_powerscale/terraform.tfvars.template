@@ -1,0 +1,33 @@
+# Typical terraform.tfvars template file for the terraform-azurerm-powerscale module
+
+# susbscription
+subscription_id = "<azure_subsciption_id>"
+
+# Cluster OS Information
+cluster_name           = "<cluster_name>"
+cluster_admin_password = "<cluster_admin_password>"
+cluster_root_password  = "<cluster_root_password>"
+image_id               = "<vhd_image_id_with_location>"
+# Example: image_id    = "/subscriptions/<azure_subsciption_id>/resourceGroups/<powerscale_image_resource_group>/providers/Microsoft.Compute/images/<powerscale-release-build>"
+
+# Cluster Scale
+node_size     = "Standard_D8ds_v4"
+cluster_nodes = 3
+max_num_nodes = 3
+
+# Networking Information
+smartconnect_zone        = "foo.bar"
+network_id               = "<vnet_including_location>"
+# Example: network_id    = "/subscriptions/<azure_subsciption_id>/resourceGroups/<vnet_resource_group>/providers/Microsoft.Network/virtualNetworks/<vnet_name>"
+addr_range_offset        = 4 # <---- Attention!  This is your starting IP range, make sure it is not conflict. (step by 4)
+external_prefix          =  "<cluster_external_network_cidr>"   # example: 100.93.35.64/28
+internal_prefix          = "<cluster_external_network_cidr>"    # example: 100.93.35.80/28
+data_disk_type           = "Premium_LRS"
+vnet_resource_group_name = "<vnet_resource_group>"
+vnet_name                = "<vnet_name>"
+
+# Storage Configuration
+os_disk_type        = "Premium_LRS"
+data_disk_size      = 12
+data_disks_per_node = 3
+jdev                = "bay.0"
