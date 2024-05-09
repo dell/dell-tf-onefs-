@@ -1,3 +1,9 @@
+/*
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+*/
+
 # Azure resource lists
 
 output "external_ip_addresses" {

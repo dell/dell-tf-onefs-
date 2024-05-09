@@ -1,3 +1,9 @@
+/*
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+*/
+
 resource "random_string" "unique_id" {
   length  = 8
   special = false

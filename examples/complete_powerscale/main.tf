@@ -1,3 +1,9 @@
+/*
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+*/
+
 /* Create a PowerScale Cluster in Azure */
 module "vsa_resource_groups" {
   source       = "../../modules/resource-group"

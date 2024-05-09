@@ -1,3 +1,9 @@
+/*
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+*/
+
 /* Get available subnet address*/
 
 # Create internal subnet

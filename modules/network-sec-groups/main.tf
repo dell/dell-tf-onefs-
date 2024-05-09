@@ -1,3 +1,9 @@
+/*
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+*/
+
 /* Network Security groups */
 
 resource "azurerm_network_security_group" "internal-nsg" {

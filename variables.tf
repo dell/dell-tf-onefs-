@@ -1,3 +1,9 @@
+/*
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+*/
+
 # Old versions of terraform need to enable variable_validation
 # so we can validate the passwords. New versions do not need this.
 # TODO(tswanson): What version are we using?

@@ -1,3 +1,9 @@
+/*
+
+        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+
+*/
+
 # Azure resource lists
 output "resource_group_name" {
   value = module.vsa_resource_groups.resource_group_name
