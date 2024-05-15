@@ -11,10 +11,19 @@ subscription_id = "<azure_subsciption_id>"
 
 # Cluster OS Information
 cluster_name           = "<cluster_name>"
-cluster_admin_password = "<cluster_admin_password>"
-cluster_root_password  = "<cluster_root_password>"
 image_id               = "<vhd_image_id_with_location>"
 # Example: image_id    = "/subscriptions/<azure_subsciption_id>/resourceGroups/<powerscale_image_resource_group>/providers/Microsoft.Compute/images/<powerscale-release-build>"
+
+# Hashed Password (Default)
+# openssl passwd -5 -salt `head -c 8 /dev/random | xxd -p` "<replace-password-here>"
+default_hashed_password = "<default_hashed_password>"
+# Hashed Password with different root and admin (Optional)
+hashed_admin_passphrase = "<hashed_admin_passphrase>"
+hashed_root_passphrase = "<hashed_admin_passphrase>"
+# OR Normal Password (Optional)
+cluster_admin_password = "<cluster_admin_password>"
+cluster_root_password  = "<cluster_root_password>"
+credentials_hashed = false
 
 # Cluster Scale
 node_size     = "Standard_D8ds_v4"
