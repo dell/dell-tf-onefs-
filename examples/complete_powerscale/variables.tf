@@ -66,7 +66,6 @@ variable "external_gateway_address" {
 
 variable "cluster_root_password" {
   default  = null
-  nullable = true
 }
 
 variable "cluster_admin_username" {
@@ -75,7 +74,6 @@ variable "cluster_admin_username" {
 
 variable "cluster_admin_password" {
   default  = null
-  nullable = true
 }
 
 variable "credentials_hashed" {
@@ -88,13 +86,6 @@ variable "default_hashed_password" {
   type        = string
   sensitive   = true
   description = "The default hashed password, using this will set the same hashed password to both root and admin users. Applicable only when credentials_hashed is set as true"
-  default     = null
-}
-
-variable "default_plain_text_password" {
-  type        = string
-  sensitive   = true
-  description = "The default plain-text password, using this will set the same plain-text password to both root and admin users.. Applicable only when credentials_hashed is set as false"
   default     = null
 }
 
