@@ -42,7 +42,7 @@ module "powerscale" {
   external_nsg_resource_group = module.vsa_resource_groups.resource_group_name
   external_subnet_name        = module.vsa_network_subnets.external_subnet_name
   # kics-scan ignore-line
-  hashed_root_passphrase      = var.hashed_root_passphrase == null ? var.default_hashed_password : var.hashed_root_passphrase
+  hashed_root_passphrase = var.hashed_root_passphrase == null ? var.default_hashed_password : var.hashed_root_passphrase
   # kics-scan ignore-line
   hashed_admin_passphrase     = var.hashed_admin_passphrase == null ? var.default_hashed_password : var.hashed_admin_passphrase
   internal_nsg_name           = module.vsa_network_security_groups.network_security_group_internal

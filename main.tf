@@ -185,7 +185,7 @@ locals {
 
 locals {
   # kics-scan ignore-line
-  root_password     = coalesce(var.cluster_root_password, "a")
+  root_password = coalesce(var.cluster_root_password, "a")
   # kics-scan ignore-line
   admin_password    = coalesce(var.cluster_admin_password, "a")
   root_length_check = length(local.root_password) > 6 && length(local.root_password) <= 72
