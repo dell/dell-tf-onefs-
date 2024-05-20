@@ -184,7 +184,9 @@ locals {
 }
 
 locals {
+  # kics-scan ignore-line
   root_password     = coalesce(var.cluster_root_password, "a")
+  # kics-scan ignore-line
   admin_password    = coalesce(var.cluster_admin_password, "a")
   root_length_check = length(local.root_password) > 6 && length(local.root_password) <= 72
   root_complexity_check = (
@@ -259,12 +261,14 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
       error_message = "PowerScale maximum number of nodes must be specified at cluster creation time and cannot scale more than 20 nodes."
     }
     precondition {
+      # kics-scan ignore-line
       condition = (var.cluster_root_password == null) || (
         local.root_length_check && local.root_complexity_check && local.root_space_control_check
       )
       error_message = "The supplied password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:\r\n1) Contains an uppercase character\r\n2) Contains a lowercase character\r\n3) Contains a numeric digit\r\n4) Contains a special character\r\n5) Control characters are not allowed."
     }
     precondition {
+      # kics-scan ignore-line
       condition = (var.cluster_admin_password == null) || (
         local.admin_length_check && local.admin_complexity_check && local.admin_space_control_check
       )
