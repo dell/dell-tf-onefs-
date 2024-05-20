@@ -184,8 +184,8 @@ locals {
 }
 
 locals {
-  root_password = coalesce(var.cluster_root_password, "a")
-  admin_password = coalesce(var.cluster_admin_password, "a")
+  root_password     = coalesce(var.cluster_root_password, "a")
+  admin_password    = coalesce(var.cluster_admin_password, "a")
   root_length_check = length(local.root_password) > 6 && length(local.root_password) <= 72
   root_complexity_check = (
     min(1, length(regexall("[a-z]+", local.root_password))) +
@@ -194,7 +194,7 @@ locals {
     min(1, length(regexall("[!-/:-@[-`{-~]+", local.root_password)))
   ) >= 3
   root_space_control_check = length(regexall("[[:space:]]+", local.admin_password)) == 0 && length(regexall("[[:cntrl:]]+", local.admin_password)) == 0
-  admin_length_check = length(local.admin_password) > 6 && length(local.admin_password) <= 72
+  admin_length_check       = length(local.admin_password) > 6 && length(local.admin_password) <= 72
   admin_complexity_check = (
     min(1, length(regexall("[a-z]+", local.admin_password))) +
     min(1, length(regexall("[A-Z]+", local.admin_password))) +
