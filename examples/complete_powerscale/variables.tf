@@ -65,18 +65,7 @@ variable "external_gateway_address" {
 }
 
 variable "cluster_root_password" {
-  validation {
-    condition = (
-      length(var.cluster_root_password) > 6 &&
-      length(var.cluster_root_password) <= 72 &&
-      (min(1, length(regexall("[a-z]+", var.cluster_root_password))) +
-        min(1, length(regexall("[A-Z]+", var.cluster_root_password))) +
-        min(1, length(regexall("[0-9]+", var.cluster_root_password))) +
-      min(1, length(regexall("[!-/:-@[-`{-~]+", var.cluster_root_password)))) >= 3 &&
-      length(regexall("[[:space:]]+", var.cluster_root_password)) == 0 &&
-    length(regexall("[[:cntrl:]]+", var.cluster_root_password)) == 0)
-    error_message = "The supplied password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:\r\n1) Contains an uppercase character\r\n2) Contains a lowercase character\r\n3) Contains a numeric digit\r\n4) Contains a special character\r\n5) Control characters are not allowed."
-  }
+  default = null
 }
 
 variable "cluster_admin_username" {
@@ -84,18 +73,34 @@ variable "cluster_admin_username" {
 }
 
 variable "cluster_admin_password" {
-  validation {
-    condition = (
-      length(var.cluster_admin_password) > 6 &&
-      length(var.cluster_admin_password) <= 72 &&
-      (min(1, length(regexall("[a-z]+", var.cluster_admin_password))) +
-        min(1, length(regexall("[A-Z]+", var.cluster_admin_password))) +
-        min(1, length(regexall("[0-9]+", var.cluster_admin_password))) +
-      min(1, length(regexall("[!-/:-@[-`{-~]+", var.cluster_admin_password)))) >= 3 &&
-      length(regexall("[[:space:]]+", var.cluster_admin_password)) == 0 &&
-    length(regexall("[[:cntrl:]]+", var.cluster_admin_password)) == 0)
-    error_message = "The supplied password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:\r\n1) Contains an uppercase character\r\n2) Contains a lowercase character\r\n3) Contains a numeric digit\r\n4) Contains a special character\r\n5) Control characters are not allowed."
-  }
+  default = null
+}
+
+variable "credentials_hashed" {
+  type        = bool
+  default     = true
+  description = "Property to indicate if the password is hashed using openssl passwd, password is hashed if set to true"
+}
+
+variable "default_hashed_password" {
+  type        = string
+  sensitive   = true
+  description = "The default hashed password, using this will set the same hashed password to both root and admin users. Applicable only when credentials_hashed is set as true"
+  default     = null
+}
+
+variable "hashed_admin_passphrase" {
+  type        = string
+  sensitive   = true
+  default     = null
+  description = "The admin user's hashed password for the OneFS cluster. Applicable only when credentials_hashed is set as true"
+}
+
+variable "hashed_root_passphrase" {
+  type        = string
+  sensitive   = true
+  default     = null
+  description = "The root user's hashed password for the OneFS cluster. Applicable only when credentials_hashed is set as true"
 }
 
 variable "image_id" {

@@ -173,11 +173,37 @@ locals {
         internal_prefix          = local.internal_prefix
         max_num_nodes            = var.max_num_nodes
         root_password            = var.cluster_root_password,
+        credentials_hashed       = var.credentials_hashed,
+        hashed_root_password     = var.hashed_admin_passphrase,
+        hashed_admin_password    = var.hashed_root_passphrase,
         smartconnect_zone        = var.smartconnect_zone,
         timezone                 = var.timezone,
       }
     )
   )
+}
+
+locals {
+  # kics-scan ignore-line
+  root_password = coalesce(var.cluster_root_password, "a")
+  # kics-scan ignore-line
+  admin_password    = coalesce(var.cluster_admin_password, "a")
+  root_length_check = length(local.root_password) > 6 && length(local.root_password) <= 72
+  root_complexity_check = (
+    min(1, length(regexall("[a-z]+", local.root_password))) +
+    min(1, length(regexall("[A-Z]+", local.root_password))) +
+    min(1, length(regexall("[0-9]+", local.root_password))) +
+    min(1, length(regexall("[!-/:-@[-`{-~]+", local.root_password)))
+  ) >= 3
+  root_space_control_check = length(regexall("[[:space:]]+", local.admin_password)) == 0 && length(regexall("[[:cntrl:]]+", local.admin_password)) == 0
+  admin_length_check       = length(local.admin_password) > 6 && length(local.admin_password) <= 72
+  admin_complexity_check = (
+    min(1, length(regexall("[a-z]+", local.admin_password))) +
+    min(1, length(regexall("[A-Z]+", local.admin_password))) +
+    min(1, length(regexall("[0-9]+", local.admin_password))) +
+    min(1, length(regexall("[!-/:-@[-`{-~]+", local.admin_password)))
+  ) >= 3
+  admin_space_control_check = length(regexall("[[:space:]]+", local.admin_password)) == 0 && length(regexall("[[:cntrl:]]+", local.admin_password)) == 0
 }
 
 resource "azurerm_resource_group_template_deployment" "azonefs_node" {
@@ -233,6 +259,20 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
     precondition {
       condition     = var.cluster_nodes <= 20 && var.cluster_nodes <= var.max_num_nodes
       error_message = "PowerScale maximum number of nodes must be specified at cluster creation time and cannot scale more than 20 nodes."
+    }
+    precondition {
+      # kics-scan ignore-line
+      condition = (var.cluster_root_password == null) || (
+        local.root_length_check && local.root_complexity_check && local.root_space_control_check
+      )
+      error_message = "The supplied password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:\r\n1) Contains an uppercase character\r\n2) Contains a lowercase character\r\n3) Contains a numeric digit\r\n4) Contains a special character\r\n5) Control characters are not allowed."
+    }
+    precondition {
+      # kics-scan ignore-line
+      condition = (var.cluster_admin_password == null) || (
+        local.admin_length_check && local.admin_complexity_check && local.admin_space_control_check
+      )
+      error_message = "The supplied password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:\r\n1) Contains an uppercase character\r\n2) Contains a lowercase character\r\n3) Contains a numeric digit\r\n4) Contains a special character\r\n5) Control characters are not allowed."
     }
   }
 

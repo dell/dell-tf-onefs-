@@ -44,7 +44,14 @@
     "cluster": {
       "name": "${cluster_name}",
       "encoding": "utf-8",
+      %{ if credentials_hashed == true }
+      "credentials_hashed": ${credentials_hashed},
+      "password": "${hashed_root_password}",
+      "admin_user_password": "${hashed_admin_password}",
+      %{ else }
+      "password": "${root_password}",
       "admin_user_password": "${admin_password}",
+      %{ endif }
       "cluster_owner": {
         "phone": "123-555-9999",
         "company": "Dell EMC",
@@ -58,7 +65,6 @@
       "timezone": {
         "name": "${timezone}"
       },
-      "password": "${root_password}",
       "cluster_name_nt4_compatibility": false
     }
   }
