@@ -17,16 +17,6 @@ module "vsa_network_security_groups" {
   resource_group_name = module.vsa_resource_groups.resource_group_name
 }
 
-module "vsa_network_subnets" {
-  source                   = "../../modules/network-subnets"
-  cluster_name             = var.cluster_name
-  unique_id                = module.vsa_resource_groups.resource_unique_id
-  vnet_name                = var.vnet_name
-  vnet_resource_group_name = var.vnet_resource_group_name
-  external_prefix          = var.external_prefix
-  internal_prefix          = var.internal_prefix
-}
-
 module "powerscale" {
   source                      = "../.."
   subscription_id             = var.subscription_id
@@ -40,14 +30,14 @@ module "powerscale" {
   smartconnect_zone           = var.smartconnect_zone
   external_nsg_name           = module.vsa_network_security_groups.network_security_group_external
   external_nsg_resource_group = module.vsa_resource_groups.resource_group_name
-  external_subnet_name        = module.vsa_network_subnets.external_subnet_name
+  external_subnet_name        = var.external_subnet_name
   # kics-scan ignore-line
   hashed_root_passphrase = var.hashed_root_passphrase == null ? var.default_hashed_password : var.hashed_root_passphrase
   # kics-scan ignore-line
   hashed_admin_passphrase     = var.hashed_admin_passphrase == null ? var.default_hashed_password : var.hashed_admin_passphrase
   internal_nsg_name           = module.vsa_network_security_groups.network_security_group_internal
   internal_nsg_resource_group = module.vsa_network_security_groups.resource_group_name
-  internal_subnet_name        = module.vsa_network_subnets.internal_subnet_name
+  internal_subnet_name        = var.internal_subnet_name
   network_id                  = var.network_id
   resource_group              = module.vsa_resource_groups.resource_group_name
 }

@@ -18,19 +18,19 @@ output "network_security_group_external" {
 }
 
 output "internal_subnet" {
-  value = module.vsa_network_subnets.internal_subnet
+  value = var.internal_prefix
 }
 
 output "external_subnet" {
-  value = module.vsa_network_subnets.external_subnet
+  value = var.external_prefix
 }
 
 output "internal_subnet_name" {
-  value = module.vsa_network_subnets.internal_subnet_name
+  value = var.internal_subnet_name
 }
 
 output "external_subnet_name" {
-  value = module.vsa_network_subnets.external_subnet_name
+  value = var.external_subnet_name
 }
 
 output "internal_nics" {

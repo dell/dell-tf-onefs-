@@ -194,3 +194,6 @@ variable "internal_prefix" {
 variable "external_prefix" {
   type = string
 }
+
+variable "external_subnet_name" {}
+variable "internal_subnet_name" {}
