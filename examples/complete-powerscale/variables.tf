@@ -194,3 +194,13 @@ variable "internal_prefix" {
 variable "external_prefix" {
   type = string
 }
+
+variable "external_subnet_name" {
+  description = "Name of the external subnet"
+  type        = string
+}
+
+variable "internal_subnet_name" {
+  description = "Name of the internal subnet"
+  type        = string
+}
