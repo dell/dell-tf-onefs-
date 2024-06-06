@@ -28,3 +28,10 @@ variable "network_security_group_name_suffix" {
   default     = "nsg"
   description = "Suffix of the security group name that's combined with a random ID so name is unique in your Azure subscription."
 }
+
+variable "default_tags" {
+  description = "Tags to be applied to the resources"
+  type        = map(string)
+  default     = {}
+}
+

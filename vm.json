@@ -46,6 +46,10 @@
         },
         "external_nic_id": {
             "type": "String"
+        },
+        "resourceTags": {
+            "type": "object",
+            "defaultValue": {}
         }
     },
     "variables": {},
@@ -55,6 +59,7 @@
             "apiVersion": "2022-08-01",
             "name": "[parameters('name')]",
             "location": "[parameters('location')]",
+            "tags": "[parameters('resourceTags')]",
             "properties": {
                 "availabilitySet": {
                     "id": "[parameters('avset_id')]"
