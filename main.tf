@@ -144,18 +144,7 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 
 locals {
   mid = jsondecode(
-    templatefile("${path.module}/machineid.tftpl", {
-      addr_range_offset = var.addr_range_offset
-      cluster_nodes     = var.cluster_nodes,
-      drive_size        = var.data_disk_size,
-      external_prefix   = local.external_prefix,
-      internal_prefix   = local.internal_prefix,
-      jdev              = jsonencode(var.jdev)
-      num_drives        = var.data_disks_per_node,
-      lj                = startswith(var.jdev, "bay") ? true : false
-      journal_bays      = startswith(var.jdev, "bay") ? 1 : 0
-      journal_type      = startswith(var.jdev, "bay") ? 1 : 8 # Assume NVDIMM
-    })
+    templatefile("${path.module}/machineid.tftpl", {})
   )
 
   acs = jsondecode(
@@ -177,7 +166,7 @@ locals {
         hashed_root_password     = var.hashed_admin_passphrase,
         hashed_admin_password    = var.hashed_root_passphrase,
         smartconnect_zone        = var.smartconnect_zone,
-        timezone                 = var.timezone,
+        join_mode                = var.join_mode,
       }
     )
   )
@@ -244,7 +233,7 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
       value = var.image_id
     },
     "user_data" : {
-      value = base64encode(format(count.index != 0 ? jsonencode(local.mid) : jsonencode(merge(local.mid, local.acs)), count.index))
+      value = base64encode(count.index != 0 ? jsonencode(local.mid) : jsonencode(merge(local.mid, local.acs)))
     },
     "internal_nic_id" : {
       value = azurerm_network_interface.azonefs_network_interface_internal[count.index].id

@@ -21,3 +21,7 @@ output "internal_nics" {
 output "external_nics" {
   value = azurerm_network_interface.azonefs_network_interface_external[*].id
 }
+
+output "join_mode" {
+  value = var.join_mode
+}

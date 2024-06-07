@@ -188,6 +188,11 @@ variable "external_nsg_resource_group" {
   type = string
 }
 
+variable "join_mode" {
+  type    = string
+  default = "auto"
+}
+
 #########################################################################
 # Required resources variables
 ########################################################################
