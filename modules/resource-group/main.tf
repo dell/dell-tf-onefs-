@@ -13,5 +13,7 @@ resource "random_string" "unique_id" {
 resource "azurerm_resource_group" "rg" {
   location = var.resource_group_location
   name     = "${random_string.unique_id.result}-${var.cluster_name}-${var.resource_group_name_suffix}"
+
+  tags = var.default_tags
 }
 

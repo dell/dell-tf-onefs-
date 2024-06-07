@@ -20,3 +20,8 @@ variable "resource_group_name_suffix" {
   description = "Suffix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
 }
 
+variable "default_tags" {
+  description = "Tags to be applied to the resources"
+  type        = map(string)
+  default     = {}
+}
