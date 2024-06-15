@@ -48,3 +48,19 @@ output "external_nics" {
 output "external_ip_addresses" {
   value = module.powerscale.external_ip_addresses
 }
+
+output "cluster_id" {
+  value = module.powerscale.cluster_id
+}
+
+output "first_node_external_ip_address" {
+  value = module.powerscale.first_node_external_ip_address
+}
+
+output "first_node_instance_name" {
+  value = module.powerscale.first_node_instance_name
+}
+
+output "first_node_instance_id" {
+  value = module.powerscale.first_node_instance_id
+}

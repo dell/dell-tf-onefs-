@@ -78,7 +78,8 @@ variable "external_gateway_address" {
 }
 
 variable "cluster_root_password" {
-  default = null
+  default   = null
+  sensitive = true
 }
 
 variable "cluster_admin_username" {
@@ -86,7 +87,8 @@ variable "cluster_admin_username" {
 }
 
 variable "cluster_admin_password" {
-  default = null
+  default   = null
+  sensitive = true
 }
 
 variable "credentials_hashed" {
