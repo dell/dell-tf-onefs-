@@ -50,17 +50,21 @@ output "external_ip_addresses" {
 }
 
 output "cluster_id" {
-  value = module.powerscale.cluster_id
+  description = "Cluster ID"
+  value       = module.powerscale.cluster_id
 }
 
 output "first_node_external_ip_address" {
-  value = module.powerscale.first_node_external_ip_address
+  description = "External IP address of the first node"
+  value       = module.powerscale.first_node_external_ip_address
 }
 
 output "first_node_instance_name" {
-  value = module.powerscale.first_node_instance_name
+  description = "First node instance name"
+  value       = module.powerscale.first_node_instance_name
 }
 
 output "first_node_instance_id" {
-  value = module.powerscale.first_node_instance_id
+  description = "First node instance ID"
+  value       = module.powerscale.first_node_instance_id
 }
