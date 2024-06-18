@@ -23,10 +23,7 @@ default_hashed_password = "<default_hashed_password>"
 # Hashed Password with different root and admin (Optional)
 hashed_admin_passphrase = "<hashed_admin_passphrase>"
 hashed_root_passphrase = "<hashed_admin_passphrase>"
-# OR Normal Password (Optional)
-cluster_admin_password = "<cluster_admin_password>"
-cluster_root_password  = "<cluster_root_password>"
-credentials_hashed = false
+
 
 # Cluster Scale
 node_size     = "Standard_D8ds_v4"

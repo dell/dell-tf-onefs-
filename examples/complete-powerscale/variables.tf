@@ -64,45 +64,30 @@ variable "external_gateway_address" {
   default = null
 }
 
-variable "cluster_root_password" {
-  default   = null
-  sensitive = true
-}
-
 variable "cluster_admin_username" {
   default = "azonefs"
 }
 
-variable "cluster_admin_password" {
-  default   = null
-  sensitive = true
-}
-
-variable "credentials_hashed" {
-  type        = bool
-  default     = true
-  description = "Property to indicate if the password is hashed using openssl passwd, password is hashed if set to true"
-}
 
 variable "default_hashed_password" {
   type        = string
   sensitive   = true
-  description = "The default hashed password, using this will set the same hashed password to both root and admin users. Applicable only when credentials_hashed is set as true"
+  description = "The default hashed password, using this will set the same hashed password to both root and admin users."
   default     = null
 }
 
 variable "hashed_admin_passphrase" {
   type        = string
   sensitive   = true
+  description = "The admin user's hashed password for the OneFS cluster."
   default     = null
-  description = "The admin user's hashed password for the OneFS cluster. Applicable only when credentials_hashed is set as true"
 }
 
 variable "hashed_root_passphrase" {
   type        = string
   sensitive   = true
+  description = "The root user's hashed password for the OneFS cluster."
   default     = null
-  description = "The root user's hashed password for the OneFS cluster. Applicable only when credentials_hashed is set as true"
 }
 
 variable "image_id" {
