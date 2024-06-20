@@ -176,26 +176,12 @@ variable "subscription_id" {
   type = string
 }
 
-
-variable "vnet_name" {
-  type = string
-}
-
-variable "vnet_resource_group_name" {
-  type = string
-}
-
 variable "get_subnets" {
-  default = "true"
+  description = "Value to get the subnets from the resource group"
+  type        = string
+  default     = "true"
 }
 
-variable "internal_prefix" {
-  type = string
-}
-
-variable "external_prefix" {
-  type = string
-}
 
 variable "external_subnet_name" {
   description = "Name of the external subnet"
@@ -204,5 +190,25 @@ variable "external_subnet_name" {
 
 variable "internal_subnet_name" {
   description = "Name of the internal subnet"
+  type        = string
+}
+
+variable "internal_nsg_name" {
+  description = "Name of internal network security group"
+  type        = string
+}
+
+variable "internal_nsg_resource_group" {
+  description = "Name of internal network security group resource group"
+  type        = string
+}
+
+variable "external_nsg_name" {
+  description = "Name of external network security group"
+  type        = string
+}
+
+variable "external_nsg_resource_group" {
+  description = "Name of external network security group resource group"
   type        = string
 }
