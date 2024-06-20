@@ -16,15 +16,18 @@ There are required input variables that have been left blank which will need to 
     image_id               = "<vhd_image_id_with_location>"
 
     network_id               = "<vnet_including_location>"
-    external_prefix          =  "<cluster_external_network_cidr>"   # example: 100.93.35.64/28
-    internal_prefix          = "<cluster_external_network_cidr>"    # example: 100.93.35.80/28
-
-    vnet_resource_group_name = "<vnet_resource_group>"
-    vnet_name                = "<vnet_name>"
 
     credentials_hashed = <boolean>
 
     subscription_id = <#######-####-####-####-############>
+    resource_group = <resource group name>
+    internal_nsg_name = "<internal network security group>"
+    internal_nsg_resource_group = "<interal network security resource group>"
+    external_nsg_name = "<external network security group>"
+    external_nsg_resource_group = "<external network security resource group>"
+
+    internal_subnet_name     = "<name_of_internal_subnet>"
+    external_subnet_name     = "<name_of_external_subnet>"
 }
 ```
 
