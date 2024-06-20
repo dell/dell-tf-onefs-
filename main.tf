@@ -78,6 +78,11 @@ data "azurerm_network_security_group" "azonefs_external_network_security_group" 
   resource_group_name = var.external_nsg_resource_group
 }
 
+data "azurerm_disk_encryption_set" "azonefs_disk_encryption_set" {
+  count               = var.use_disk_encryption ? 1 : 0
+  name                = var.disk_encryption_set_name
+  resource_group_name = var.disk_encryption_set_resource_group
+}
 
 resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   count                         = var.cluster_nodes
@@ -248,6 +253,9 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
     },
     "resourceTags" : {
       value = var.default_tags
+    },
+    "disk_encryption_set_id" : {
+      value = var.use_disk_encryption ? data.azurerm_disk_encryption_set.azonefs_disk_encryption_set[count.index].id : null
     }
   })
 

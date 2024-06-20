@@ -195,6 +195,21 @@ variable "join_mode" {
   default = "auto"
 }
 
+variable "use_disk_encryption" {
+  type    = bool
+  default = false
+}
+
+variable "disk_encryption_set_name" {
+  type    = string
+  default = null
+}
+
+variable "disk_encryption_set_resource_group" {
+  type    = string
+  default = null
+}
+
 #########################################################################
 # Required resources variables
 ########################################################################
