@@ -10,7 +10,7 @@
             "defaultValue" : "centralus"
         },
         "sku": {
-            "type": "String",
+            "type": "String", 
             "defaultValue" : "Standard_D8ds_v4"
         },
         "os_disk_type": {
@@ -50,6 +50,10 @@
         "resourceTags": {
             "type": "object",
             "defaultValue": {}
+        },
+        "disk_encryption_set_id": {
+            "type": "String",
+            "defaultValue": ""
         }
     },
     "variables": {},
@@ -81,7 +85,8 @@
                         "caching": "ReadWrite",
                         "deleteOption" : "Delete",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('os_disk_type')]"
+                            "storageAccountType": "[parameters('os_disk_type')]",
+                            "diskEncryptionSet": "[parameters('disk_encryption_set_id')]"
                         }
                     },
                     "copy" : [
