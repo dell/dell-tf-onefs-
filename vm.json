@@ -86,7 +86,9 @@
                         "deleteOption" : "Delete",
                         "managedDisk": {
                             "storageAccountType": "[parameters('os_disk_type')]",
-                            "diskEncryptionSet": "[parameters('disk_encryption_set_id')]"
+                            "diskEncryptionSet": {
+                                "id": "[parameters('disk_encryption_set_id')]"
+                            }
                         }
                     },
                     "copy" : [
