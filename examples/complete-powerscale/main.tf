@@ -9,9 +9,6 @@ module "powerscale" {
   source                      = "../.."
   subscription_id             = var.subscription_id
   image_id                    = var.image_id
-  cluster_admin_password      = var.cluster_admin_password
-  cluster_root_password       = var.cluster_root_password
-  credentials_hashed          = var.credentials_hashed
   cluster_name                = var.cluster_name
   cluster_nodes               = var.cluster_nodes
   max_num_nodes               = var.max_num_nodes

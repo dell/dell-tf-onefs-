@@ -95,12 +95,10 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_address_space"></a> [address\_space](#input\_address\_space) | n/a | `string` | `"10.20.0.0/16"` | no |
-| <a name="input_cluster_admin_password"></a> [cluster\_admin\_password](#input\_cluster\_admin\_password) | n/a | `any` | n/a | yes |
 | <a name="input_cluster_admin_username"></a> [cluster\_admin\_username](#input\_cluster\_admin\_username) | n/a | `string` | `"azonefs"` | no |
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `any` | `null` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | n/a | `any` | n/a | yes |
 | <a name="input_cluster_nodes"></a> [cluster\_nodes](#input\_cluster\_nodes) | n/a | `number` | `3` | no |
-| <a name="input_cluster_root_password"></a> [cluster\_root\_password](#input\_cluster\_root\_password) | n/a | `any` | n/a | yes |
 | <a name="input_data_disk_size"></a> [data\_disk\_size](#input\_data\_disk\_size) | n/a | `number` | `12` | no |
 | <a name="input_data_disk_type"></a> [data\_disk\_type](#input\_data\_disk\_type) | n/a | `string` | `"StandardSSD_LRS"` | no |
 | <a name="input_data_disks_per_node"></a> [data\_disks\_per\_node](#input\_data\_disks\_per\_node) | n/a | `number` | `3` | no |

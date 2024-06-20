@@ -39,14 +39,9 @@
     },
     "cluster": {
       "name": "${cluster_name}",
-      %{ if credentials_hashed == true }
-      "credentials_hashed": ${credentials_hashed},
+      "credentials_hashed": true,
       "password": "${hashed_root_password}",
       "admin_user_password": "${hashed_admin_password}",
-      %{ else }
-      "password": "${root_password}",
-      "admin_user_password": "${admin_password}",
-      %{ endif }
       "l3_cache": {
         "ssd_l3_cache_default_enabled": false
       },
