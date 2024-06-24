@@ -255,7 +255,7 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
       value = var.default_tags
     },
     "disk_encryption_set_id" : {
-      value = var.use_disk_encryption ? data.azurerm_disk_encryption_set.azonefs_disk_encryption_set[0].id : ""
+      value = var.use_disk_encryption ? data.azurerm_disk_encryption_set.azonefs_disk_encryption_set[0].id : "noencryption"
     }
   })
 

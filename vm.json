@@ -53,10 +53,20 @@
         },
         "disk_encryption_set_id": {
             "type": "String",
-            "defaultValue": ""
+            "defaultValue": "noencryption"
         }
     },
-    "variables": {},
+    "variables": {
+        "managedDiskEncrytion": {
+            "storageAccountType": "[parameters('os_disk_type')]",
+            "diskEncryptionSet": {
+                "id": "[parameters('disk_encryption_set_id')"
+            }
+        },
+        "managedDiskNoEncryption": {
+            "storageAccountType": "[parameters('os_disk_type')]"
+        }
+    },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
@@ -84,12 +94,7 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "deleteOption" : "Delete",
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('os_disk_type')]",
-                            "diskEncryptionSet": {
-                                "id": "[parameters('disk_encryption_set_id')]"
-                            }
-                        }
+                        "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncrytion'))]"
                     },
                     "copy" : [
                         {
