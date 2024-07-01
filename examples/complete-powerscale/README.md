@@ -51,6 +51,10 @@ In the above command, `head -c 8 /dev/random | xxd -p` is used to generate an 8 
 
 For the complete set of input variables that can be provided, check the `variables.tf` file.
 
+## Connectivity
+
+It is important to limit the connectivity on the internal vnet to only the other virtual nodes in the cluster.
+
 ## Deploy Terraform Module
 
 ```shell
