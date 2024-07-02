@@ -60,7 +60,7 @@
         "managedDiskEncrytion": {
             "storageAccountType": "[parameters('os_disk_type')]",
             "diskEncryptionSet": {
-                "id": "[parameters('disk_encryption_set_id')"
+                "id": "[parameters('disk_encryption_set_id')]"
             }
         },
         "managedDiskNoEncryption": {

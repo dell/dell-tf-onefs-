@@ -93,6 +93,7 @@ variable "cluster_admin_password" {
 
 variable "credentials_hashed" {
   type        = bool
+  default     = true
   description = "If true, hashed password variables are used instead of plaintext."
 }
 
