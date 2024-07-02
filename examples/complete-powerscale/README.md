@@ -11,13 +11,11 @@ There are required input variables that have been left blank which will need to 
 ```json
 {
     cluster_name           = "<cluster_name>"
-    cluster_admin_password = "<cluster_admin_password>"
-    cluster_root_password  = "<cluster_root_password>"
+    hashed_admin_passphrase = "<hashed_admin_passphrase>"
+    hashed_root_passphrase  = "<hashed_root_passphrase>"
     image_id               = "<vhd_image_id_with_location>"
 
     network_id               = "<vnet_including_location>"
-
-    credentials_hashed = <boolean>
 
     subscription_id = <#######-####-####-####-############>
     resource_group = <resource group name>
@@ -51,10 +49,11 @@ openssl passwd -5 -salt `head -c 8 /dev/random | xxd -p` "<replace-password-here
 In the above command, `head -c 8 /dev/random | xxd -p` is used to generate an 8 byte random string in its hexadecimal representation which is used as the salt for producing the hashed output.
 </details>
 
-> NOTE: It is **strongly recommended** that hashed password(s) are used for deploying the PowerScale clusters.
-For testing purposes, you can provide the password(s) in plain-text format using `cluster_admin_password` and `cluster_root_password` for the admin and root user respectively. Additionally, if the passwords are provided in plain-text format, make sure that the `credentials_hashed` parameter is set as `false`.<br><br> The `default_hashed_password` variable is only available in this example module. The PowerScale Cluster does not have that option. While deploying that module, use the respective password parameters for the root and admin users.
-
 For the complete set of input variables that can be provided, check the `variables.tf` file.
+
+## Connectivity
+
+It is important to limit the connectivity on the internal vnet to only the other virtual nodes in the cluster.
 
 ## Deploy Terraform Module
 

@@ -77,36 +77,28 @@ variable "external_gateway_address" {
   default = null
 }
 
-variable "cluster_root_password" {
-  default   = null
-  sensitive = true
-}
-
 variable "cluster_admin_username" {
   default = "azonefs"
 }
 
-variable "cluster_admin_password" {
-  default   = null
-  sensitive = true
-}
-
-variable "credentials_hashed" {
-  type        = bool
-  default     = true
-  description = "If true, hashed password variables are used instead of plaintext."
-}
-
 variable "hashed_root_passphrase" {
   type        = string
+  sensitive   = true
   description = "The hashed root passphrase to create onefs cluster."
-  default     = null
+  validation {
+    condition     = var.hashed_root_passphrase != null
+    error_message = "Please provide a valid hashed root password."
+  }
 }
 
 variable "hashed_admin_passphrase" {
   type        = string
+  sensitive   = true
   description = "The hashed admin passphrase to create the onefs cluster."
-  default     = null
+  validation {
+    condition     = var.hashed_admin_passphrase != null
+    error_message = "Please provide a valid hashed admin password."
+  }
 }
 
 variable "image_id" {
