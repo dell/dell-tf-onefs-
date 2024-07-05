@@ -44,6 +44,7 @@ output "external_nics" {
 }
 
 output "encryption_set" {
+  description = "full id of disk encryption set"
   value = data.azurerm_disk_encryption_set.azonefs_disk_encryption_set[*].id
 }
 

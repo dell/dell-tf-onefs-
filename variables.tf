@@ -189,16 +189,19 @@ variable "join_mode" {
 }
 
 variable "use_disk_encryption" {
+  description = "set to true to enable vm disk encryption"
   type    = bool
   default = false
 }
 
 variable "disk_encryption_set_name" {
+  description = "name of disk encryption set to be used with vms"
   type    = string
   default = null
 }
 
 variable "disk_encryption_set_resource_group" {
+  description = "resource group containing disk encryption set"
   type    = string
   default = null
 }
