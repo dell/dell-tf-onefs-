@@ -57,7 +57,7 @@
         }
     },
     "variables": {
-        "managedDiskEncrytion": {
+        "managedDiskEncryption": {
             "storageAccountType": "[parameters('os_disk_type')]",
             "diskEncryptionSet": {
                 "id": "[parameters('disk_encryption_set_id')]"
@@ -94,7 +94,7 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "deleteOption" : "Delete",
-                        "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncrytion'))]"
+                        "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncryption'))]"
                     },
                     "copy" : [
                         {
@@ -106,9 +106,7 @@
                                 "createOption": "Empty",
                                 "caching": "None",
                                 "deleteOption" : "Delete",
-                                "managedDisk": {
-                                    "storageAccountType": "[parameters('data_disk_type')]"
-                                },
+                                "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncryption'))]",
                                 "diskSizeGB": "[parameters('data_disk_size')]"
                             }
                         }
