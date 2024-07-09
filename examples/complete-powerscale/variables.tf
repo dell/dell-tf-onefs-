@@ -198,10 +198,17 @@ variable "external_nsg_resource_group" {
   type        = string
 }
 
-#------------------------------------------------------
-variable "use_disk_encryption" {}
-variable "disk_encryption_set_name" {}
-variable "disk_encryption_set_resource_group" {}
-#----------------------------------------------------
+variable "use_disk_encryption" {
+  description = "Set to true to enable disk encryption using an existing disk encryption set"
+  type        = bool
+}
+variable "disk_encryption_set_name" {
+  description = "Name of existing disk encryption set"
+  type        = string
+}
+variable "disk_encryption_set_resource_group" {
+  description = "Name of disk encryption set resource group"
+  type        = string
+}
 
 
