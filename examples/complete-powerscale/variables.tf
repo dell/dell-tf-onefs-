@@ -197,3 +197,11 @@ variable "external_nsg_resource_group" {
   description = "Name of external network security group resource group"
   type        = string
 }
+
+#------------------------------------------------------
+variable "use_disk_encryption" {}
+variable "disk_encryption_set_name" {}
+variable "disk_encryption_set_resource_group" {}
+#----------------------------------------------------
+
+
