@@ -43,6 +43,11 @@ output "external_nics" {
   value = azurerm_network_interface.azonefs_network_interface_external[*].id
 }
 
+output "encryption_set" {
+  description = "full id of disk encryption set"
+  value       = data.azurerm_disk_encryption_set.azonefs_disk_encryption_set[*].id
+}
+
 output "join_mode" {
   value = var.join_mode
 }

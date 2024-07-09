@@ -40,3 +40,8 @@ output "first_node_instance_id" {
   description = "First node instance ID"
   value       = module.powerscale.first_node_instance_id
 }
+
+output "disk_encryption_set_id" {
+  description = "Disk encryption set id"
+  value       = module.powerscale.encryption_set
+}

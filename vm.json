@@ -10,7 +10,7 @@
             "defaultValue" : "centralus"
         },
         "sku": {
-            "type": "String",
+            "type": "String", 
             "defaultValue" : "Standard_D8ds_v4"
         },
         "os_disk_type": {
@@ -50,9 +50,23 @@
         "resourceTags": {
             "type": "object",
             "defaultValue": {}
+        },
+        "disk_encryption_set_id": {
+            "type": "String",
+            "defaultValue": "noencryption"
         }
     },
-    "variables": {},
+    "variables": {
+        "managedDiskEncryption": {
+            "storageAccountType": "[parameters('os_disk_type')]",
+            "diskEncryptionSet": {
+                "id": "[parameters('disk_encryption_set_id')]"
+            }
+        },
+        "managedDiskNoEncryption": {
+            "storageAccountType": "[parameters('os_disk_type')]"
+        }
+    },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
@@ -80,9 +94,7 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "deleteOption" : "Delete",
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('os_disk_type')]"
-                        }
+                        "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncryption'))]"
                     },
                     "copy" : [
                         {
@@ -94,9 +106,7 @@
                                 "createOption": "Empty",
                                 "caching": "None",
                                 "deleteOption" : "Delete",
-                                "managedDisk": {
-                                    "storageAccountType": "[parameters('data_disk_type')]"
-                                },
+                                "managedDisk": "[if(equals(parameters('disk_encryption_set_id'), 'noencryption'), variables('managedDiskNoEncryption'), variables('managedDiskEncryption'))]",
                                 "diskSizeGB": "[parameters('data_disk_size')]"
                             }
                         }

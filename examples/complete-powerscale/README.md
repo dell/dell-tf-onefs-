@@ -51,6 +51,10 @@ In the above command, `head -c 8 /dev/random | xxd -p` is used to generate an 8 
 
 For the complete set of input variables that can be provided, check the `variables.tf` file.
 
+## Disk Encryption
+
+By enabling disk encryption via setting the `use_disk_encryption` input parameter to true, it is possible to use an existing disk encryption set in azure to encrypt both the OS disks and data disks created by terraform. Note that the name of the existing disk encryption set and the resource group it is located in will need to be added to the `disk_encryption_set_name` and `disk_encryption_set_resource_group` input parameters respectively. 
+
 ## Connectivity
 
 It is important to limit the connectivity on the internal vnet to only the other virtual nodes in the cluster.

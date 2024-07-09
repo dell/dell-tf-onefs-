@@ -19,10 +19,13 @@ module "powerscale" {
   # kics-scan ignore-line
   hashed_root_passphrase = var.hashed_root_passphrase == null ? var.default_hashed_password : var.hashed_root_passphrase
   # kics-scan ignore-line
-  hashed_admin_passphrase     = var.hashed_admin_passphrase == null ? var.default_hashed_password : var.hashed_admin_passphrase
-  internal_nsg_name           = var.internal_nsg_name
-  internal_nsg_resource_group = var.internal_nsg_resource_group
-  internal_subnet_name        = var.internal_subnet_name
-  network_id                  = var.network_id
-  resource_group              = var.resource_group
+  hashed_admin_passphrase            = var.hashed_admin_passphrase == null ? var.default_hashed_password : var.hashed_admin_passphrase
+  internal_nsg_name                  = var.internal_nsg_name
+  internal_nsg_resource_group        = var.internal_nsg_resource_group
+  internal_subnet_name               = var.internal_subnet_name
+  network_id                         = var.network_id
+  resource_group                     = var.resource_group
+  use_disk_encryption                = var.use_disk_encryption
+  disk_encryption_set_name           = var.disk_encryption_set_name
+  disk_encryption_set_resource_group = var.disk_encryption_set_resource_group
 }
