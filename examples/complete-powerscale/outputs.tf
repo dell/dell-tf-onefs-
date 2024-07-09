@@ -42,5 +42,6 @@ output "first_node_instance_id" {
 }
 
 output "disk_encryption_set_id" {
-  value = module.powerscale.encryption_set
+  description = "Disk encryption set id"
+  value       = module.powerscale.encryption_set
 }
