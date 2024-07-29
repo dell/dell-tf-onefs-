@@ -51,3 +51,8 @@ os_disk_type        = "Premium_LRS"
 data_disk_size      = 12
 data_disks_per_node = 3
 jdev                = "bay.0"
+
+# Disk Encryption Configuration
+use_disk_encryption                = True
+disk_encryption_set_name           = <name of disk encryption set>
+disk_encryption_set_resource_group = <disk encryption set resource group>
