@@ -26,6 +26,9 @@ There are required input variables that have been left blank which will need to 
 
     internal_subnet_name     = "<name_of_internal_subnet>"
     external_subnet_name     = "<name_of_external_subnet>"
+
+    disk_encryption_set_name           = "<name of disk encryption set>"
+    disk_encryption_set_resource_group = "<disk encryption set resource group>"
 }
 ```
 
