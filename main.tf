@@ -151,6 +151,11 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
   ]
 }
 
+/**
+  The following local .tftpl files are used to:
+  - calculate network information for the created network interfaces
+  - Hash passwords for created powerscale cluster
+*/
 locals {
   mid = jsondecode(
     templatefile("${path.module}/machineid.tftpl", {})
@@ -178,6 +183,9 @@ locals {
   )
 }
 
+/**
+  The following resouce uses the vm.json file which contains properties for deploying an azure VM
+*/
 resource "azurerm_resource_group_template_deployment" "azonefs_node" {
   count               = var.cluster_nodes
   name                = "${local.internal_cluster_id}-node-${count.index}-deployment-${uuid()}"
