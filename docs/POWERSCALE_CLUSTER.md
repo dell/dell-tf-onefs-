@@ -91,7 +91,7 @@ In order to create a PowerScale cluster in the Azure Public Cloud, an administra
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.3.0 |
+| <a name="provider_azurerm"></a> [azurerm (azure resource manager)](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) | 3.3.0 |
 
 ## Resources
 

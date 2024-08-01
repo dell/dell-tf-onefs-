@@ -12,7 +12,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](docs/CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/badge/License-MPL_2.0-blue.svg)](LICENSE)
 
-The Terraform Module for Dell Technologies (Dell) PowerScale Cluster allows Data Center and IT administrators to use Hashicorp Terraform to automate and orchestrate the provisioning and management of Dell PowerScale Cluster in [Azure](https://azure.microsoft.com/en-us/).
+The Terraform Module for Dell Technologies (Dell) PowerScale Cluster allows Data Center and IT administrators to use Hashicorp Terraform to automate and orchestrate the provisioning and management of Dell PowerScale Cluster in [Azure](https://azure.microsoft.com/en-us/) using the azurerm (azure resource manager) provider.
 
 ## Table of contents
 
