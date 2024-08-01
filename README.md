@@ -37,6 +37,6 @@ The Terraform Module for Dell PowerScale cluster is released and licensed under 
 
 ## PowerScale Cluster
 
-To deploy the PowerScale cluster you can refer to the steps mentioned [here](https://github.com/dell/terraform-azurerm-powerscale/blob/rel/v1.0.0/docs/POWERSCALE_CLUSTER.md).
+To deploy the PowerScale cluster you can refer to the steps mentioned [here](./docs/POWERSCALE_CLUSTER.md).
 
 **Note:** It is important to limit the connectivity on the internal vnet to only the other virtual nodes in the cluster.
