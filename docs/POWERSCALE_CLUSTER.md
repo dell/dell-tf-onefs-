@@ -1,8 +1,34 @@
 <!--
 
-        Copyright (c) 2024 Dell Inc. or its subsidiaries. All rights reserved.
+        Copyright (c) 2023 Dell, Inc or its subsidiaries.
+
+        This Source Code Form is subject to the terms of the Mozilla Public
+        License, v. 2.0. If a copy of the MPL was not distributed with this
+        file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 -->
+
+## Introduction
+
+This folder contains a [Terraform](https://www.terraform.io/) module that deploys a single node
+[PowerScale](https://www.delltechnologies.com/partner/en-us/partner/powerscale.htm) cluster in the [Azure](https://azure.microsoft.com/en-us) platform. 
+
+It provisions all the necessary resources required to deploy the cluster including the following:
+1. [Proximity Placement Groups](https://learn.microsoft.com/en-us/azure/virtual-machines/co-location)
+2. [Network interface(s)](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface?tabs=azure-portal)
+3. [Availability Sets](https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview)
+4. [Virtual Machine(s)](https://learn.microsoft.com/en-us/azure/virtual-machines/overview)
+5. [Managed Disk(s)](https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview)
+
+
+## Additional Components
+
+The additional components which needs to be performed/deployed separately and are not included in this module are:
+* [Resource Groups](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#what-is-a-resource-group)
+* [Virtual Network](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview)
+* [Virtual Network Subnets](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet?tabs=azure-portal)
+* [Network Security Groups](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview)
+* [Disk Encryption ](https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption)
 
 ## Requirements
 
@@ -61,17 +87,11 @@ In order to create a PowerScale cluster in the Azure Public Cloud, an administra
 ]
 ```
 
-No requirements.
-
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.3.0 |
-
-## Modules
-
-No modules.
+| <a name="provider_azurerm"></a> [azurerm (azure resource manager)](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) | 3.3.0 |
 
 ## Resources
 
@@ -127,3 +147,10 @@ No modules.
 |------|-------------|
 | <a name="output_internal_ip_addresses"></a> [internal\_ip\_addresses](#output\_internal\_ip\_addresses) | n/a |
 | <a name="output_ip_addresses"></a> [ip\_addresses](#output\_ip\_addresses) | n/a |
+
+
+## Terraform Errors
+
+If an error appears during the terraform apply stage, one of the below actions can be taken
+* `terraform apply` : Run the `terraform apply` command to retry
+* `terraform destroy` : To destroy all resources created from the `terraform apply` command
