@@ -33,7 +33,7 @@ The Terraform Module for Dell PowerScale cluster is released and licensed under 
 
 | **Terraform Module** | **OneFS OS Version** | **Terraform** |
 |----------------------|----------------------|---------------|
-| v1.0.0               | >= 9.6.1.0           | >= 1.3.6 <br> |
+| v1.0.0               | >= 9.8.0.0           | >= 1.3.6 <br> |
 
 ## PowerScale Cluster
 
