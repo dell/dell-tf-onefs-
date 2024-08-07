@@ -87,7 +87,7 @@ data "azurerm_disk_encryption_set" "azonefs_disk_encryption_set" {
 
 resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   count                         = var.cluster_nodes
-  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-internal"
+  name                          = "${local.internal_cluster_id}-${count.index + 1}-network-interface-internal"
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
@@ -114,7 +114,7 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 
 resource "azurerm_network_interface" "azonefs_network_interface_external" {
   count                         = var.cluster_nodes
-  name                          = "${local.internal_cluster_id}-${count.index}-network-interface-external"
+  name                          = "${local.internal_cluster_id}-${count.index + 1}-network-interface-external"
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
@@ -185,18 +185,18 @@ locals {
 }
 
 /**
-  The following resouce uses the vm.json file which contains properties for deploying an azure VM
+  The following resouce uses the vm.json file which contains properties for deploying an azure VM.
 */
 resource "azurerm_resource_group_template_deployment" "azonefs_node" {
   count               = var.cluster_nodes
-  name                = "${local.internal_cluster_id}-node-${count.index}-deployment-${uuid()}"
+  name                = "${local.internal_cluster_id}-node-${count.index + 1}-deployment-${uuid()}"
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   deployment_mode     = "Incremental"
   template_content    = file("${path.module}/vm.json")
   tags                = var.default_tags
   parameters_content = jsonencode({
     "name" : {
-      value = "${local.internal_cluster_id}-node-${count.index}"
+      value = "${local.internal_cluster_id}-node-${count.index + 1}" # Increment by 1 to match PowerScale LNN naming scheme
     },
     "location" : {
       value = data.azurerm_resource_group.azonefs_resource_group.location
