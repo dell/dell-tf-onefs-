@@ -205,10 +205,12 @@ variable "use_disk_encryption" {
 variable "disk_encryption_set_name" {
   description = "Name of existing disk encryption set"
   type        = string
+  default     = null
 }
 variable "disk_encryption_set_resource_group" {
   description = "Name of disk encryption set resource group"
   type        = string
+  default     = null
 }
 
 
