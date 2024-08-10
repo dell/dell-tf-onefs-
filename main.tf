@@ -8,6 +8,7 @@
  Main terraform Script to deploy PowerScale Cluster in Azure
 */
 
+
 provider "azurerm" {
   skip_provider_registration = true
   subscription_id            = var.subscription_id
@@ -189,7 +190,7 @@ locals {
 */
 resource "azurerm_resource_group_template_deployment" "azonefs_node" {
   count               = var.cluster_nodes
-  name                = "${local.internal_cluster_id}-node-${count.index + 1}-deployment-${uuid()}"
+  name                = join("-", [substr(local.internal_cluster_id, 0, 20), uuid(), count.index])
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   deployment_mode     = "Incremental"
   template_content    = file("${path.module}/vm.json")
