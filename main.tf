@@ -35,7 +35,7 @@ resource "azurerm_proximity_placement_group" "azonefs_proximity_placement_group"
   name                = "${local.internal_cluster_id}-proximity-placement-group"
   location            = data.azurerm_resource_group.azonefs_resource_group.location
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
-  tags                = var.default_tags
+  tags                = var.resource_tags
 }
 
 resource "azurerm_availability_set" "azonefs_aset" {
@@ -45,7 +45,7 @@ resource "azurerm_availability_set" "azonefs_aset" {
   proximity_placement_group_id = azurerm_proximity_placement_group.azonefs_proximity_placement_group.id
   platform_update_domain_count = var.update_domain_count
   platform_fault_domain_count  = 2
-  tags                         = var.default_tags
+  tags                         = var.resource_tags
 }
 
 data "azurerm_virtual_network" "azonefs_virtual_network" {
@@ -92,7 +92,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_internal" {
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
-  tags                          = var.default_tags
+  tags                          = var.resource_tags
 
   ip_configuration {
     name                          = "internal"
@@ -119,7 +119,7 @@ resource "azurerm_network_interface" "azonefs_network_interface_external" {
   location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
   resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
   enable_accelerated_networking = true
-  tags                          = var.default_tags
+  tags                          = var.resource_tags
 
   ip_configuration {
     name                          = "external"
@@ -194,7 +194,7 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
   resource_group_name = data.azurerm_resource_group.azonefs_resource_group.name
   deployment_mode     = "Incremental"
   template_content    = file("${path.module}/vm.json")
-  tags                = var.default_tags
+  tags                = var.resource_tags
   parameters_content = jsonencode({
     "name" : {
       value = "${local.internal_cluster_id}-node-${count.index + 1}" # Increment by 1 to match PowerScale LNN naming scheme
@@ -236,7 +236,7 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
       value = azurerm_network_interface.azonefs_network_interface_external[count.index].id
     },
     "resourceTags" : {
-      value = var.default_tags
+      value = var.resource_tags
     },
     "disk_encryption_set_id" : {
       value = var.use_disk_encryption ? data.azurerm_disk_encryption_set.azonefs_disk_encryption_set[0].id : "noencryption"
