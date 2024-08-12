@@ -206,15 +206,4 @@ variable "disk_encryption_set_resource_group" {
   default     = null
 }
 
-#########################################################################
-# Required resources variables
-########################################################################
 variable "subscription_id" {}
-
-variable "default_tags" {
-  description = "Tags to be applied to the resources"
-  type        = map(string)
-  default     = {}
-}
-
-#############################################################################################
