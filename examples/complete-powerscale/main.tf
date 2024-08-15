@@ -34,5 +34,5 @@ module "powerscale" {
   disk_encryption_set_name           = var.disk_encryption_set_name
   disk_encryption_set_resource_group = var.disk_encryption_set_resource_group
   resource_tags                      = var.resource_tags
-
+  identity_list                      = var.identity_list
 }

@@ -213,4 +213,8 @@ variable "disk_encryption_set_resource_group" {
   default     = null
 }
 
-
+variable "identity_list" {
+  description = "List of resource id(s) that reference managed user-assigned identities"
+  type        = list(string)
+  default     = []
+}

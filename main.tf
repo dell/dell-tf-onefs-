@@ -23,6 +23,11 @@ provider "azurerm" {
 locals {
   network_id_fields   = regex("/subscriptions/(?P<subscription_id>[^/]+)/resourceGroups/(?P<resource_group>[^/]+)/providers/Microsoft.Network/virtualNetworks/(?P<name>.+)", var.network_id)
   internal_cluster_id = var.cluster_id != null ? var.cluster_id : var.cluster_name
+
+  # Hack to get around Terraform's type system to handle multiple user identities in vm.json
+  id_type  = length(var.identity_list) == 0 ? "None" : "UserAssigned"
+  ids      = { "type" = local.id_type, "userAssignedIdentities" = { for i in var.identity_list : i => {} } }
+  identity = { for k, v in local.ids : k => v if v != {} }
 }
 
 
@@ -240,6 +245,9 @@ resource "azurerm_resource_group_template_deployment" "azonefs_node" {
     },
     "disk_encryption_set_id" : {
       value = var.use_disk_encryption ? data.azurerm_disk_encryption_set.azonefs_disk_encryption_set[0].id : "noencryption"
+    },
+    "identity" : {
+      value = local.identity
     }
   })
 

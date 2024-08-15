@@ -183,6 +183,12 @@ variable "external_nsg_resource_group" {
   type = string
 }
 
+variable "identity_list" {
+  description = "List of resource id(s) that reference managed user-assigned identities"
+  type        = list(string)
+  default     = []
+}
+
 variable "join_mode" {
   type    = string
   default = "auto"

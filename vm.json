@@ -62,6 +62,10 @@
         "fake_ssh_public_key": {
             "type": "securestring",
             "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDM8FUTWREWGbWPSEADohwsFiBGG5a9hB4Bv2UjRqDuw59yjXrVQTbK5/a8BFJw8Anxlb23lCKvF3Vx7/O7jdWwonRDJy0+ow+SmW0GzgHyi2nZg4HtWdJ05YYCBqqbv5x16E7lFeapwZW8f2AqKsDVs3Y1QPry5gPaa8lt1vUEz/fxP7yzD7OBcF33AsoIH1Tbai4fuNVPLjQL21yaVe+DCxEFcpE3vi28kyimjsa0iXVo9JEPr/6HbXte2wR9SPBjki3Vimdnsq6Pn5Kbw4VX84FWv1LCsnYzBkavZPobE/lVYFGzBGCSr6UJ9xnNTm/lDVsd8nEghPXKEPSslIQEiKfUfeKpDVmTorHdsD0WetSlO/+KxDDmBVr4Ux4aharc7Lyn5RTw4Y8w+luuMBD8V2b6D4D1v8ZstjLuuUnO6ozdFy+bZ5Ks5tgKdF5buMCpONAnzfG+1WRkuTF/kiaLu+GwwD1uJ3OGo8TDPKFYNWhYjt0J9UNdnl2Gg/VF/gzm9xRdA5c0z6xnAoyBNi1IxiddeDe4Cw0q7tcEvfH5H+itqlXGmobj0teGgAUzV49YSH2rUhWFhslCiB9MV6kuFJdk3wkjczseo+QB19O66pPVoRqhNGijIB90+laKCWEnj7Xp6TdWaXdpQph18aTdVuZIVbwpo6rsQg7ih9nceQ== fake@user"
+        },
+        "identity" : {
+            "type" : "object",
+            "defaultValue" : {}
         }
     },
     "variables": {
@@ -81,6 +85,7 @@
             "apiVersion": "2022-08-01",
             "name": "[parameters('name')]",
             "location": "[parameters('location')]",
+            "identity" : "[parameters('identity')]",
             "tags": "[parameters('resourceTags')]",
             "properties": {
                 "availabilitySet": {

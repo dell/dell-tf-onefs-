@@ -57,11 +57,15 @@ For the complete set of input variables that can be provided, check the `variabl
 
 ## Disk Encryption
 
-By enabling disk encryption via setting the `use_disk_encryption` input parameter to true, it is possible to use an existing disk encryption set in azure to encrypt both the OS disks and data disks created by terraform. Note that the name of the existing disk encryption set and the resource group it is located in will need to be added to the `disk_encryption_set_name` and `disk_encryption_set_resource_group` input parameters respectively. 
+By enabling disk encryption via setting the `use_disk_encryption` input parameter to true, it is possible to use an existing disk encryption set in azure to encrypt both the OS disks and data disks created by terraform. Note that the name of the existing disk encryption set and the resource group it is located in will need to be added to the `disk_encryption_set_name` and `disk_encryption_set_resource_group` input parameters respectively.
 
 ## Connectivity
 
 It is important to limit the connectivity on the internal vnet to only the other virtual nodes in the cluster.
+
+## User-assigned Managed Identity
+
+This is an optional input. By default, the `identity_list` input parameter is left empty. When specified, this allows the user to specify resource id(s) within a list that point to user-assigned identities within Azure.
 
 ## Deploy Terraform Module
 
