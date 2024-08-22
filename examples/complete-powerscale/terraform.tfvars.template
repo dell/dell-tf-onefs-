@@ -50,7 +50,6 @@ external_nsg_resource_group = "<external network security resource group>"
 os_disk_type        = "Premium_LRS"
 data_disk_size      = 12
 data_disks_per_node = 3
-jdev                = "bay.0"
 
 # Disk Encryption Configuration
 use_disk_encryption                = <true|false>

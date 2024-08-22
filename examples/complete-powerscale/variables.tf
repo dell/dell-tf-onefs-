@@ -151,11 +151,6 @@ variable "timezone" {
   default = "Greenwich Mean Time"
 }
 
-variable "jdev" {
-  type    = string
-  default = "bay.0"
-}
-
 
 variable "subscription_id" {
   type = string
