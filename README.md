@@ -27,7 +27,7 @@ The Terraform Module for Dell Technologies (Dell) PowerScale Cluster allows Data
 For any queries regarding the Terraform Module for Dell PowerScale cluster issues, questions or feedback, please follow our [support process](./docs/SUPPORT.md)
 
 ## License
-The Terraform Module for Dell PowerScale cluster is released and licensed under the MPL-2.0 license. See [LICENSE](./LICENSE) for the full terms.
+The Terraform Module for Dell PowerScale cluster is released and licensed under the MPL-2.0 license. Once an end-user initiates deployment of terraform-azurerm-powerscale, that end-user will deploy other open-source and/or third-party software that is licensed separately by their respective developer communities and/or third parties. For a comprehensive list of software and their licenses, click [here](./docs/DEPENDENCIES.md). Dell (or any other contributors) shall have no liability regarding (and no responsibility to provide support for) an end-user's use of any open-source and/or third-party software and terraform-azurerm-powerscale users are solely responsible for ensuring that they are complying with all such licenses. terraform-azurerm-powerscale is provided “as is” without any warranty, express or implied. Dell (or any other contributors) shall have no liability for any direct, indirect, incidental, punitive, special, or consequential damages for an end-user’s use of terraform-azurerm-powerscale. See [LICENSE](./LICENSE) for the full terms.
 
 ## Prerequisites
 
