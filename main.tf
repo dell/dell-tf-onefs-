@@ -92,12 +92,12 @@ data "azurerm_disk_encryption_set" "azonefs_disk_encryption_set" {
 }
 
 resource "azurerm_network_interface" "azonefs_network_interface_internal" {
-  count                         = var.cluster_nodes
-  name                          = "${local.internal_cluster_id}-${count.index + 1}-network-interface-internal"
-  location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
-  resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
-  enable_accelerated_networking = true
-  tags                          = var.resource_tags
+  count                          = var.cluster_nodes
+  name                           = "${local.internal_cluster_id}-${count.index + 1}-network-interface-internal"
+  location                       = data.azurerm_virtual_network.azonefs_virtual_network.location
+  resource_group_name            = data.azurerm_resource_group.azonefs_resource_group.name
+  accelerated_networking_enabled = true
+  tags                           = var.resource_tags
 
   ip_configuration {
     name                          = "internal"
@@ -119,12 +119,12 @@ resource "azurerm_network_interface_security_group_association" "azonefs_network
 }
 
 resource "azurerm_network_interface" "azonefs_network_interface_external" {
-  count                         = var.cluster_nodes
-  name                          = "${local.internal_cluster_id}-${count.index + 1}-network-interface-external"
-  location                      = data.azurerm_virtual_network.azonefs_virtual_network.location
-  resource_group_name           = data.azurerm_resource_group.azonefs_resource_group.name
-  enable_accelerated_networking = true
-  tags                          = var.resource_tags
+  count                          = var.cluster_nodes
+  name                           = "${local.internal_cluster_id}-${count.index + 1}-network-interface-external"
+  location                       = data.azurerm_virtual_network.azonefs_virtual_network.location
+  resource_group_name            = data.azurerm_resource_group.azonefs_resource_group.name
+  accelerated_networking_enabled = true
+  tags                           = var.resource_tags
 
   ip_configuration {
     name                          = "external"
