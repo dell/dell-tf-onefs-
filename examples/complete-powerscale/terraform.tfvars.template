@@ -34,7 +34,7 @@ max_num_nodes = 3
 smartconnect_zone        = "foo.bar"
 network_id               = "<vnet_including_location>"
 # Example: network_id    = "/subscriptions/<azure_subsciption_id>/resourceGroups/<vnet_resource_group>/providers/Microsoft.Network/virtualNetworks/<vnet_name>"
-addr_range_offset        = 4 # <---- Attention!  This is your starting IP range, make sure it is not conflict. (step by 4)
+addr_range_offset        = 5 # <---- Attention!  This is your starting IP range, make sure it is not conflict. (step by 5)
 external_subnet_name     = "<name_of_external_subnet>"
 internal_subnet_name     = "<name_of_internal_subnet>"
 

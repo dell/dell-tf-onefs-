@@ -57,10 +57,10 @@ variable "external_subnet_name" {
 
 # The offset into the address ranges where we will begin our IP ranges
 variable "addr_range_offset" {
-  default = 4
+  default = 5
   validation {
-    condition     = var.addr_range_offset > 3
-    error_message = "Azure reserves the first four IP addresses in subnets. addr_range_offset must be >3."
+    condition     = var.addr_range_offset > 4
+    error_message = "Azure reserves the first four IP addresses in subnets. addr_range_offset must be >4."
   }
 }
 
