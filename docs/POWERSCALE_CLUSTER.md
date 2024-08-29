@@ -114,39 +114,56 @@ In order to create a PowerScale cluster in the Azure Public Cloud, an administra
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_address_space"></a> [address\_space](#input\_address\_space) | n/a | `string` | `"10.20.0.0/16"` | no |
-| <a name="input_cluster_admin_username"></a> [cluster\_admin\_username](#input\_cluster\_admin\_username) | n/a | `string` | `"azonefs"` | no |
-| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `any` | `null` | no |
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | n/a | `any` | n/a | yes |
-| <a name="input_cluster_nodes"></a> [cluster\_nodes](#input\_cluster\_nodes) | n/a | `number` | `3` | no |
-| <a name="input_data_disk_size"></a> [data\_disk\_size](#input\_data\_disk\_size) | n/a | `number` | `12` | no |
-| <a name="input_data_disk_type"></a> [data\_disk\_type](#input\_data\_disk\_type) | n/a | `string` | `"StandardSSD_LRS"` | no |
-| <a name="input_data_disks_per_node"></a> [data\_disks\_per\_node](#input\_data\_disks\_per\_node) | n/a | `number` | `3` | no |
-| <a name="input_dns_domains"></a> [dns\_domains](#input\_dns\_domains) | n/a | `string` | `"c.daring-sunset-250103.internal"` | no |
-| <a name="input_dns_servers"></a> [dns\_servers](#input\_dns\_servers) | n/a | `string` | `"[ \"168.63.129.16\", \"169.254.169.254\"]"` | no |
-| <a name="input_external_gateway_address"></a> [external\_gateway\_address](#input\_external\_gateway\_address) | n/a | `any` | `null` | no |
-| <a name="input_external_prefix"></a> [external\_prefix](#input\_external\_prefix) | n/a | `string` | `"10.20.2.0/24"` | no |
-| <a name="input_external_secondary_ip"></a> [external\_secondary\_ip](#input\_external\_secondary\_ip) | n/a | <pre>object({<br>    customer   = map(list(string))<br>    management = map(list(string))<br>  })</pre> | <pre>{<br>  "customer": {},<br>  "management": {}<br>}</pre> | no |
-| <a name="input_image_id"></a> [image\_id](#input\_image\_id) | n/a | `string` | `""` | no |
-| <a name="input_internal_gateway_address"></a> [internal\_gateway\_address](#input\_internal\_gateway\_address) | n/a | `any` | `null` | no |
-| <a name="input_internal_prefix"></a> [internal\_prefix](#input\_internal\_prefix) | n/a | `string` | `"10.20.1.0/24"` | no |
-| <a name="input_location"></a> [location](#input\_location) | n/a | `string` | `"centralus"` | no |
-| <a name="input_network_id"></a> [network\_id](#input\_network\_id) | n/a | `any` | n/a | yes |
-| <a name="input_node_size"></a> [node\_size](#input\_node\_size) | n/a | `string` | `"Standard_D32s_v4"` | no |
-| <a name="input_ocm_endpoint"></a> [ocm\_endpoint](#input\_ocm\_endpoint) | Endpoint for OneFS cluster to communicate with OCM. | `string` | `""` | no |
-| <a name="input_os_disk_type"></a> [os\_disk\_type](#input\_os\_disk\_type) | n/a | `string` | `"Standard_LRS"` | no |
-| <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | n/a | `any` | `null` | no |
-| <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | n/a | `map(string)` | `{}` | no |
-| <a name="input_smartconnect_zone"></a> [smartconnect\_zone](#input\_smartconnect\_zone) | FQDN to use as the DNS zone for SmartConnect | `string` | `""` | no |
-| <a name="input_storage_account_name"></a> [storage\_account\_name](#input\_storage\_account\_name) | n/a | `any` | `null` | no |
-| <a name="input_timezone"></a> [timezone](#input\_timezone) | n/a | `string` | `"Greenwich Mean Time"` | no |
+| addr_range_offset | The offset into the address ranges where we will begin our IP ranges | `number` | `5` | no |
+| cluster_admin_username | Default: "azonefs" | `string` | `"azonefs"` | no |
+| cluster_id | n/a | `any` | `null` | no |
+| cluster_name | Validation: length <= 40, regex pattern | `string` | n/a | yes |
+| cluster_nodes | Default: 3, validation: <= 20 | `number` | `3` | yes |
+| data_disk_size | Default: 12 | `number` | `12` | no |
+| data_disk_type | Default: "Premium_LRS" | `string` | `"Premium_LRS"` | no |
+| data_disks_per_node | Default: 3 | `number` | `3` | no |
+| default_hashed_password | Type: string, sensitive, description: default hashed password | `string` | `null` | no |
+| disk_encryption_set_name | Default: null | `string` | `null` | no |
+| disk_encryption_set_resource_group | Default: null | `string` | `null` | no |
+| dns_domains | n/a | `string` | `"c.daring-sunset-250103.internal"` | no |
+| dns_servers | n/a | `string` | `"[ \"168.63.129.16\", \"169.254.169.254\"]"` | no |
+| external_gateway_address | Default: null | `string` | `null` | no |
+| external_nsg_name | Description: Name of external network security group | `string` | n/a | yes |
+| external_nsg_resource_group | Description: Name of external network security group resource group | `string` | n/a | yes |
+| external_subnet_name | Description: Name of external subnet | `string` | n/a | yes |
+| external_secondary_ip | Type: object, default: {} | `object` | `{}` | no |
+| hashed_admin_passphrase | Type: string, sensitive, description: admin user's hashed password | `string` | `null` | yes |
+| hashed_root_passphrase | Type: string, sensitive, description: root user's hashed password | `string` | `null` | yes |
+| identity_list | Description: List of resource id(s) that reference managed user-assigned identities, default: [] | `list` | `[]` | no |
+| image_id | n/a | `string` | n/a | yes |
+| internal_nsg_name | Description: Name of internal network security group | `string` | n/a | yes |
+| internal_nsg_resource_group | Description: Name of internal network security group resource group | `string` | n/a | yes |
+| internal_subnet_name | Description: Name of internal subnet | `string` | n/a | yes |
+| max_num_nodes | Default: 20, validation: <= 20 | `number` | `20` | yes |
+| network_id | n/a | `string` | n/a | yes |
+| node_size | Default: "Standard_D8ds_v4" | `string` | `"Standard_D8ds_v4"` | no |
+| os_disk_type | Default: "Premium_LRS" | `string` | `"Premium_LRS"` | no |
+| resource_group | Default: null | `string` | `null` | yes |
+| resource_tags | Type: map, default: {} | `map` | `{}` | no |
+| smartconnect_zone | Description: FQDN to use as the DNS zone for SmartConnect, default: "" | `string` | `""` | no |
+| subscription_id | n/a | `string` | n/a | yes |
+| timezone | Default: "Greenwich Mean Time" | `string` | `"Greenwich Mean Time"` | no |
+| update_domain_count | Default: 20 | `number` | `20` | no |
+| use_disk_encryption | Description: Set to true to enable disk encryption using an existing disk encryption set | `bool` | `false` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_internal_ip_addresses"></a> [internal\_ip\_addresses](#output\_internal\_ip\_addresses) | n/a |
-| <a name="output_ip_addresses"></a> [ip\_addresses](#output\_ip\_addresses) | n/a |
+|internal_nics | The list of internal NICS |
+|internal_ip_addresses | The list of internal IP addresses list |
+|external_nics | The list of external NICS |
+|external_ip_addresses | The list of external IP addresses |
+|cluster_id | The cluster ID |
+|first_node_external_ip_address | The external IP address of the first node |
+|first_node_instance_name | The name of the first node instance |
+|first_node_instance_id | The ID of the first node instance |
+|disk_encryption_set_id | The disk encryption set ID |
 
 
 ## Terraform Errors
